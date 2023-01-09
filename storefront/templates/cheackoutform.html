@@ -1,0 +1,79 @@
+{% extends "partials/base.html" %}
+
+
+{% block cheackout %}
+<div class="col-12">
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-12 mt-3 text-center text-uppercase">
+            <h2>Payment</h2>
+        </div>
+    </div>
+
+    <main class="row">
+        <div class="col-12 bg-white py-3 mb-3">
+            <div class="row">
+                <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center">
+                    <h3 class="text-info text-center">Click the pay button to initiate payment</h3>
+                    <h4 class="text-center">Total amount to be paid: <span class="text-danger">{{amount}}</span></h4>
+                    <button class="btn btn-sm btn-info mx-auto px-5" id="rzp-button1">Pay</button>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <!-- Main Content -->
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    
+    var options = {
+        "key": "rzp_test_NjFTSrtk8dCDt7", // Enter the Key ID generated from the Dashboard
+        "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or INR 500.
+        "currency": "{{currency}}",
+        "name": "{{companyname}}",
+        "order_id": "{{order_id}}",
+        "handler": function (response){
+            alert(response.razorpay_payment_id);
+            console.log(response)
+            sentPaymentInfo(response);
+        },
+        "prefill": {
+            "name": "{{username}}",
+            "email": "{{useremail}}",
+            "contact": "{{phonenum}}"
+        },
+        "notes": {},
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        console.log("{{order_id}}");
+        e.preventDefault();
+    }
+    function sentPaymentInfo(response){
+        $.ajax(
+        {
+          type: "POST",
+          url: "{%url 'markpaymentsuccess'%}",
+          dataType: 'json',
+          data: {order_id:response.razorpay_order_id,
+                payment_id:response.razorpay_payment_id,
+                payment_signature:response.razorpay_signature},
+          success: function(data) {
+            alert('Payment success')
+            window.location.replace("{% url 'usercart' %}");
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+    }
+    </script>
+{% endblock scripts %}

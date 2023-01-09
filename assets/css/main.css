@@ -1,0 +1,61 @@
+body{
+    font-family: 'Quicksand', sans-serif;
+}
+
+/*-- Buttons --*/
+.btn-primary{
+    background-color: #F2789F;
+    border: none;
+}
+
+/*-- Site navbar --*/
+.site-navbar{
+    background-color: #ffffff;
+    box-shadow: 0px 5px 29px -7px rgba(0,0,0,0.15);
+}
+
+.site-navbar .navbar-brand img{
+    width: 135px;
+}
+
+.site-navbar .nav-link{
+    font-weight: 700;
+    font-size: 19px;
+}
+
+.site-navbar .nav-link i{
+    font-size: 26px;
+    color: #F2789F;
+    position: relative;
+    top: 2px;
+}
+
+/*-- Cards --*/
+.home-cake-card img{
+    height: 210px;
+    object-fit: cover;
+}
+
+.login-card{
+    width: 300px;
+    box-shadow: 0px 5px 29px -7px rgba(0,0,0,0.15);
+}
+
+/*-- Detail page --*/
+.detail-image{
+    height: 336px;
+    object-fit: cover;
+}
+
+.create-account{
+    color:#F2789F;
+}
+
+.login{
+    color:#F2789F;
+}
+
+/*-- Footer --*/
+.footer{
+    background-color: #393B44;
+}

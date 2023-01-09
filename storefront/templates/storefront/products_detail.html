@@ -1,0 +1,78 @@
+{% extends 'partials/base.html'%}
+{% load static %}
+   
+{% block detail%}
+        <!-- Detail page content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6 mt-4">
+                    <img class="detail-image w-100" src={{object.img.url}}>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6 mt-4">
+                    <h4>{{object.name}}</h4>
+                    <h2>&#8377; {{object.price}}</h2>
+                    <div class="col-12 mb-3 align-self-end">
+                        {% if user.is_authenticated%}
+                        {% if usercart%}
+                        {% for item in  usercart%}
+                            {% if item.product == product %}
+                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="removefromcart btn btn-outline-danger"><i class=" fas fa-times mr-2"></i>Remove from cart</a>
+                            {% else %}
+                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
+                            {% endif %}
+                        {% endfor %}
+                        {% else %}
+                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
+                        {% endif %}  
+                        {% endif %}   
+                        <a  href="{% url 'buynow' %}" class="btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Buy Now</a> 
+                    </div>     
+                </div>
+            </div>
+        </div>
+
+{% endblock %}   
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).on('click','.addtocart',function(e){
+        e.preventDefault();
+        var prod_id = $(this).attr('product');
+        $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'addtocart' %}",
+          dataType: 'json',
+          data: {product:prod_id},
+          success: function(data) {
+            $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
+            $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
+            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+    });
+
+    $(document).on('click','.removefromcart',function(e){
+        e.preventDefault();
+        var prod_id = $(this).attr('product');
+        $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'removefromcart'%}",
+          dataType: 'json',
+          data: {product:prod_id},
+          success: function(data) {
+            $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
+            $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
+            $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
+          },
+          error: function() { 
+            alert("server error");
+          }
+      });
+    });
+</script>
+{% endblock scripts %}

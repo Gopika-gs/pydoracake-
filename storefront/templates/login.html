@@ -1,0 +1,32 @@
+{% extends 'partials/base.html'%} {% load static %} {% block login %}
+<!-- Login page content -->
+<div class="container">
+  <div class="login-card card mt-5 ml-auto mr-auto">
+    <div class="card-body">
+      <h4 class="login text-center">Login</h4>
+      <form method="POST" action="{{request.get_full_path}}">
+        {% for message in messages %}
+        <div class="alert alert-success">
+          <a href="#" class="alert-link">{{ message }}</a>.
+        </div>
+        {% endfor%} {%csrf_token%}
+        <div class="form-group">
+          <label for="email">Username</label>
+          {{form.username}}
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          {{form.password}}
+        </div>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary">
+            <i class="las la-lock-open"></i> Login
+          </button>
+           </div>
+           <a href="{% url 'logout' %}">New to Flipkart? Create an account</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

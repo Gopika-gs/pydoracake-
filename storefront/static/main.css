@@ -1,0 +1,114 @@
+body {
+  font-family: "Quicksand", sans-serif;
+  background-color: #FFE5EC;
+}
+
+.btn-primary {
+  background-color: #FF8FAB;
+  border: none;
+}
+
+#search-button:hover {
+  background-color: #FF8FAB;
+  color: #000000;
+}
+
+#topContent {
+  text-align: right;
+
+}
+
+#topContent a i {
+  color: #000000;
+}
+
+.site-navbar {
+
+  box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
+}
+
+.searchbar {
+  margin: 0.3em 2em
+}
+
+.searchbar input {
+  width: 250px;
+}
+
+.site-navbar .navbar-brand img {
+  width: 135px;
+}
+
+.site-navbar .nav-link {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.site-navbar .nav-link i {
+  font-size: 26px;
+  color: #f2789f;
+  position: relative;
+  top: 2px;
+}
+
+/*-- Cards --*/
+.home-cake-card img {
+  height: 210px;
+  object-fit: cover;
+}
+
+.login-card {
+  width: 300px;
+  box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
+}
+
+/*-- Detail page --*/
+.detail-image {
+  height: 336px;
+  object-fit: cover;
+}
+
+.la-search {
+  color: #080808;
+}
+
+.nav-link {
+  color: #000000;
+  text-decoration: none;
+}
+
+table a:hover {
+  color: #000000;
+}
+
+.dropdown-link {
+  font-size: 13px;
+}
+
+.site-navbar table a:hover {
+  color: #000000;
+
+
+}
+
+.nowrap {
+  white-space: nowrap;
+
+}
+
+.guest-view .dropdown:hover .dropdown-menu {
+  display: block;
+  text-decoration: none !important;
+  color: #f2789f;
+}
+
+.user-view .dropdown:hover .dropdown-menu {
+  display: block;
+  text-decoration: none !important;
+  color: #f2789f;
+}
+
+
+.footer {
+  background-color: #393b44;
+}
