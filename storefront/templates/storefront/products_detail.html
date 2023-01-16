@@ -1,40 +1,149 @@
 {% extends 'partials/base.html'%}
-{% load static %}
-   
+{% load static %}   
 {% block detail%}
-        <!-- Detail page content -->
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-6 mt-4">
-                    <img class="detail-image w-100" src={{object.img.url}}>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 mt-4">
-                    <h4>{{object.name}}</h4>
-                    <h2>&#8377; {{object.price}}</h2>
-                    <div class="col-12 mb-3 align-self-end">
-                        {% if user.is_authenticated%}
-                        {% if usercart%}
-                        {% for item in  usercart%}
-                            {% if item.product == product %}
-                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="removefromcart btn btn-outline-danger"><i class=" fas fa-times mr-2"></i>Remove from cart</a>
-                            {% else %}
-                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-                            {% endif %}
-                        {% endfor %}
-                        {% else %}
-                            <a id="cartbtn{{object.id}}" product="{{object.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-                        {% endif %}  
-                        {% endif %}   
-                        <a  href="{% url 'buynow' %}" class="btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Buy Now</a> 
-                    </div>     
-                </div>
-            </div>
+<div class="mt-4">
+  <div class="row">
+    <div class="col-sm-6 col-md-6 col-lg position-fixed left ">
+      <div class="float-right ">
+        <img class="detail-image " src={{prod.img.url}}>
+      </div>
+    </div>
+    <div class=" col-md-6 col-lg offset-sm-6 right">
+      <h4>{{prod.name}}</h4>
+      <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.price}}</h5>
+      <h6 class="mt-2">Pick an upgrade</h6>
+      <div class="row no-gutters">
+        <div class="col-2">
+          <table>
+            <tr>
+              <td><img class="image_upgrade img-responsive " src={{prod.img.url}}></td>
+            </tr>
+            <tr>
+              <td><figure>1/2 kg</figure></td>
+            </tr>
+          </table>
         </div>
+        <div class="col-2 pl-1">
+          <table >
+            <tr>
+              <td><img class="image_upgrade img-responsive " src={{prod.img.url}}></td>
+            </tr>
+            <tr>
+              <td><figure>1 kg</figure></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <form>
+              <div class="row">
+                <div class="col form-group">
+                  <input type="number" class="form-control" placeholder="Enter Pincode "  required>
+                </div>
+                <div class="col">
+                  <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="text" placeholder="Select Delivery Date" onfocus="(this.type='date')"  required>
+                      <span class="input-group-append ml-n1">
+                        <i class="fa fa-calendar-alt"></i>
+                      </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <input type="radio" name="radio" id="radio1" checked="true" />
+                    <label class="radio" for="radio1">With Egg</label>
+                  <input type="radio" name="radio" id="radio2" />
+                    <label for="radio2">Eggless</label>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <textarea class="form-control" rows="1" placeholder="Message On Cake" maxlength="25" id="comment"></textarea>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            {% if user.is_authenticated%}
+            {% if prod.id in cart_product_ids %}
+            <div class="col">
+              <a id="cartbtn{{prod.id}}" product="{{prod.id}}" href="" class="removefromcart btn btn-dart btn-lg btn-block"><i class="las la-shopping-cart"></i>Remove from cart</a>
+            </div>
+            {% else %}
+            <div class="col">
+              <a id="cartbtn{{prod.id}}" product="{{prod.id}}" href="" class="addtocart btn btn-outline-dark btn-primary btn-lg btn-block"><i class="las la-cart-plus"></i>Add to cart</a>
+            </div>
+            {% endif %}
+            <div class="col">
+              <a id="cartbtn{{prod.id}}" product="{{prod.id}}" href="" class="buynow btn  btn-primary btn-lg btn-block"><i class="las la-shopping-bag"></i>Buy Now</a>
+            </div>
+            {% else %}
+            <div class="col">
+              <a id="cartbtn" href="{%url 'register' %}" class="btn  btn-lg btn-primary"><i class="las la-shopping-bag"></i>Buy Now</a>                              
+            </div>
+            <div class="col">
+              <a id="cartbtn" href="{%url 'guestaddtocart' %}" class="btn  btn-lg btn-primary"><i class="las la-cart-plus"></i>Add to Cart</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col mt-4">
+          <h5>Description</h5>
+          <hr/>
+          <h6>Product Details:</h6>
+          <ul>
+            <li>Cake Flavour-</li>
+            <li> Weight-</li>
+            <li>Shape-</li>
+            <li>Serves-</li>
+            <li>Size-</li>
+          </ul>
+          <h5 class="mt-3">Care Informations</h5>
+          <hr/>
+          <ul>
+            <li>Store cream cakes in a refrigerator. Fondant cakes should be stored in an air conditioned environment.</li>
+            <li>Slice and serve the cake at room temperature and make sure it is not exposed to heat.</li>
+            <li>Use a serrated knife to cut a fondant cake</li>
+            <li>Sculptural elements and figurines may contain wire supports or toothpicks or wooden skewers for support.</li>
+            <li>Please check the placement of these items before serving to small children.</li>
+            <li>The cake should be consumed within 24 hours.</li>
+            <li>Enjoy your cake!</li>
+          </ul>
+        </div> 
+      </div>
+    </div>      
+  </div>
+</div>
 
 {% endblock %}   
 
 {% block scripts %}
 <script type="text/javascript">
+    $(document).on('click','.buynow',function(e){
+      e.preventDefault();
+      var prod_id = $(this).attr('product');
+      $.ajax(
+    {
+        type: "POST",
+        url: "{%url 'buynow' %}",
+        dataType: 'json',
+        data: {product:prod_id},
+        success: function(data) {
+          window.location.href = "{%url 'usercart'%}"
+        },
+        error: function() { 
+          window.location.href = "{%url 'usercart'%}"
+        }
+        
+    });
+  });
+
     $(document).on('click','.addtocart',function(e){
         e.preventDefault();
         var prod_id = $(this).attr('product');
@@ -74,5 +183,7 @@
           }
       });
     });
+
+   
 </script>
 {% endblock scripts %}

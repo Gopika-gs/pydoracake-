@@ -3,32 +3,22 @@ body {
   background-color: #FFE5EC;
 }
 
-.btn-primary {
-  background-color: #FF8FAB;
-  border: none;
-}
-
 #search-button:hover {
   background-color: #FF8FAB;
   color: #000000;
 }
 
-#topContent {
-  text-align: right;
-
-}
-
-#topContent a i {
-  color: #000000;
-}
-
 .site-navbar {
-
   box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
+  background-color: #FFE5EC;
 }
 
 .searchbar {
   margin: 0.3em 2em
+}
+
+.main {
+  margin-top: 100px;
 }
 
 .searchbar input {
@@ -42,30 +32,6 @@ body {
 .site-navbar .nav-link {
   font-weight: 700;
   font-size: 14px;
-}
-
-.site-navbar .nav-link i {
-  font-size: 26px;
-  color: #f2789f;
-  position: relative;
-  top: 2px;
-}
-
-/*-- Cards --*/
-.home-cake-card img {
-  height: 210px;
-  object-fit: cover;
-}
-
-.login-card {
-  width: 300px;
-  box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
-}
-
-/*-- Detail page --*/
-.detail-image {
-  height: 336px;
-  object-fit: cover;
 }
 
 .la-search {
@@ -87,13 +53,17 @@ table a:hover {
 
 .site-navbar table a:hover {
   color: #000000;
-
-
 }
 
 .nowrap {
   white-space: nowrap;
+}
 
+.site-navbar .nav-link i {
+  font-size: 26px;
+  color: #f2789f;
+  position: relative;
+  top: 2px;
 }
 
 .guest-view .dropdown:hover .dropdown-menu {
@@ -108,6 +78,90 @@ table a:hover {
   color: #f2789f;
 }
 
+.btn-primary {
+  background-color: #FF8FAB;
+  border: none;
+}
+
+.home-cake-card img {
+  height: 210px;
+  object-fit: cover;
+}
+
+.login-card {
+  width: 300px;
+  box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
+}
+
+.card-link {
+  color: #000000;
+}
+
+.padding-0 {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.detailrupee {
+  font-size: 16px;
+}
+
+.image_upgrade {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input[type="radio"]:checked+label:before {
+  background-color: #93e026;
+}
+
+input[type="radio"]+label:before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  padding: 6px;
+  margin-right: 3px;
+  background-clip: content-box;
+  border: 2px solid #bbb;
+  background-color: #e7e6e7;
+  border-radius: 50%;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.detailprice {
+  font-size: 10px;
+}
+
+figure {
+  font-size: 14px;
+}
+
+.detail-image {
+  height: 336px;
+  object-fit: cover;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 1;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+ul {
+  list-style-type: disc !important;
+  padding-left: 1em !important;
+  margin-left: 1em;
+}
+
+.left {
+  width: 50%;
+}
 
 .footer {
   background-color: #393b44;

@@ -3,78 +3,19 @@
 {% block viewmore %}
         <!-- Homepage content -->
   
-        <div class="container  mt-4">
-            <div class="row">
-                {% for product in prod %}
-                <div class="col-12 col-md-4 col-lg-3">
-                    <div class="home-cake-card card mb-3">
-                        <img src="{{product.img.url}}" class="card-img-top">
-                        <div class="card-body">
-                            <h5 class="card-title font-weight-bold">{{product.name}}</h5>
-                            <div class="col-12 mb-3 align-self-end">
-                            {% if user.is_authenticated%}
-                              {% if usercart%}
-                                {% for item in  usercart%}
-                                  {% if item.product == product %}
-                                  <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="removefromcart btn btn-outline-danger"><i class=" fas fa-times mr-2"></i>Remove from cart</a>
-                                  {% else %}
-                                  <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-                                  {% endif %}
-                                {% endfor %}
-                              {% else %}
-                                  <a id="cartbtn{{product.id}}" product="{{product.id}}" href="" class="addtocart btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Add to cart</a>
-                              {% endif %}  
-                            {% endif %}   
-                              <a  href="{% url 'detailpage' product.id%}" class="btn btn-outline-dark"><i class="fas fa-cart-plus mr-2"></i>Quick View</a> 
-                            </div>                              
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+  <div class="container  mt-4">
+    <div class="row">
+        {% for product in prod %}
+      <div class="col-12 col-md-4 col-lg-3">
+        <a class="card-link" href="{% url 'detailpage' id=product.id %}">
+          <div class="home-cake-card card mb-3">
+              <img src="{{product.img.url}}" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title font-weight-bold">{{product.name}}</h5>               
+              </div></a>
+          </div>
+      </div>
+        {% endfor %}
+    </div>
+  </div>
 {% endblock %}
-
-{% block scripts %}
-<script type="text/javascript">
-    $(document).on('click','.addtocart',function(e){
-        e.preventDefault();
-        var prod_id = $(this).attr('product');
-        $.ajax(
-      {
-          type: "POST",
-          url: "{%url 'addtocart' %}",
-          dataType: 'json',
-          data: {product:prod_id},
-          success: function(data) {
-            $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
-            $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
-          },
-          error: function() { 
-            alert("server error");
-          }
-      });
-    });
-
-    $(document).on('click','.removefromcart',function(e){
-        e.preventDefault();
-        var prod_id = $(this).attr('product');
-        $.ajax(
-      {
-          type: "POST",
-          url: "{%url 'removefromcart'%}",
-          dataType: 'json',
-          data: {product:prod_id},
-          success: function(data) {
-            $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
-            $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
-          },
-          error: function() { 
-            alert("server error");
-          }
-      });
-    });
-</script>
-{% endblock scripts %}

@@ -23,8 +23,7 @@ def search(request):
         query = request.GET.get('search')
         if query == '':
             query = 'None'
-        results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(price__icontains=query) )
-
+        results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(price__icontains=query))
     return render(request, 'storefront/search_page.html', {'query': query, 'results': results})
 
 
@@ -105,13 +104,9 @@ def login(request):
     
 
 def viewMore(request,category_id):
-    prod = Products.objects.filter(category = category_id )
+    prod = Products.objects.filter(category = category_id)
     usercart = []
-    if request.user.is_authenticated:
-        usercart = CustomerCart.objects.filter(customer = request.user)
-
-    print(usercart)
-    return render(request,'view_more.html',{'prod': prod,'usercart':usercart})
+    return render(request,'view_more.html',{'prod': prod})
 
 def guestaddtocart(request):
     return render(request,'guestcart.html')
@@ -122,8 +117,37 @@ def guestcheckoutcustomer(request):
 def guestcart(request):
     return render(request,'guestcart.html')
 
-class DetailView(DetailView):
-    model = Products
+def detailpage(request,id):
+    prod = Products.objects.get(id = id)     
+    if request.user.is_authenticated:  
+        usercart = CustomerCart.objects.filter(customer = request.user)
+        cart_product_ids = []
+        if usercart:
+            for item in usercart:
+                cart_product_ids.append(item.product.id)
+
+        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart, 'cart_product_ids': cart_product_ids})
+    else:
+        return render(request,'storefront/products_detail.html',{'prod': prod})    
+
+@csrf_exempt
+@login_required(login_url = reverse_lazy('login'))
+def buynow(request):
+    if is_ajax(request=request):
+        product_id = int(request.POST['product'])
+        user = request.user
+        usercart = CustomerCart.objects.filter(customer = request.user)
+        cart_instance = CustomerCart(customer = user,product_id=product_id)
+        if usercart:
+            for item in usercart:
+                if item == cart_instance:
+                    return JsonResponse({'result':'failed'})
+        else:
+
+            cart_instance.save()
+            print(usercart)
+            return JsonResponse({'result':'success'})
+ 
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -131,9 +155,13 @@ def addtocart(request):
     if is_ajax(request=request):
         product_id = int(request.POST['product'])
         user = request.user
-        cart_instance = CustomerCart(customer = user,product_id=product_id)
-        cart_instance.save()
-        return JsonResponse({'result':'success'})
+        if CustomerCart.objects.filter(customer = user,product_id=product_id):
+            return JsonResponse({'result':'failed'})
+        else:
+            cart_instance = CustomerCart(customer = user,product_id=product_id)
+            cart_instance.save()
+            print(cart_instance)
+            return JsonResponse({'result':'success'})
         
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -227,8 +255,5 @@ def markpaymentsuccess(request):
         customercart_instance.delete()
         return JsonResponse({'result':'success'})        
              
-def buynow(request, product_id): 
-    
-    return HttpResponseRedirect(reverse('usercart'))
-             
+   
     

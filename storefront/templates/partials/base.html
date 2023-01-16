@@ -21,10 +21,8 @@
   </head>
   <body>
     <!-- Site navbar -->
-    <div class="container-fluid mr-0 ml-7" id="topContent">
-          <a href="tel:1234567890"><i class="las la-phone">Call us +91 123-456-7890</i></a>
-    </div>
-    <nav class="site-navbar navbar navbar-expand-lg top-navbar">
+    
+    <nav class="site-navbar fixed-top navbar navbar-expand-lg top-navbar ">
       <a class="navbar-brand ml-3" href="{% url 'homepage'%}">
         <img src="{% static 'images/logo.png' %}" />
       </a>
@@ -52,8 +50,7 @@
                     <td><a class="nav-link guest text-center pb-0"><i class="las la-shopping-cart"></i></a></td>
                   </tr>
                   <tr>
-                    <td><a class="nav-link guest text-center pt-0">Cart</a></td>
-                  </tr>
+                    <td><a class="nav-link guest text-center pt-0">Cart</a></td></tr>
                 </table>
               </a>
             </div>
@@ -116,54 +113,55 @@
       </div>
         {% endif %}
     </nav>
+    <div class="main">
+      <div class="col-lg-auto text-center text-lg-right header-item-holder">
+        {% if user.is_authenticated  %}
+      
+        {% endif %}
+      </div>
 
-    <div class="col-lg-auto text-center text-lg-right header-item-holder">
-      {% if user.is_authenticated  %}
-     
-      {% endif %}
-    </div>
-
-    {% block home %} 
-    {% endblock %}
+      {% block home %} 
+      {% endblock %}
     
-    {% block createaccount %} 
-    {% endblock %}
+      {% block createaccount %} 
+      {% endblock %}
 
-    {% block login %} 
-    {% endblock %}
+      {% block login %} 
+      {% endblock %}
 
-    {% block detail %} 
-    {% endblock %} 
+      {% block detail %} 
+      {% endblock %} 
+      
+      {% block viewmore %} 
+      {% endblock %}
+
+      {% block cart %} 
+      {% endblock %}
+
+      {% block cheackout %}
+      {%endblock%}
+
+      {% block searchresult %}
+      {% endblock %}
+
     
-    {% block viewmore %} 
-    {% endblock %}
-
-    {% block cart %} 
-    {% endblock %}
-
-    {% block cheackout %}
-    {%endblock%}
-
-    {% block searchresult %}
-    {% endblock %}
-
-   
-    <!-- Footer -->
-    <div class="footer p-3 mt-5">
-      <div class="row">
-        <div class="col">
-          <p class="text-white m-0">&copy; PyDora 2022 - All rights reserved</p>
-        </div>
-        <div class="col-auto">
-          <p class="text-white m-0">
-            <i class="las la-at"></i> hello@pydora.com
-          </p>
+      <!-- Footer -->
+      <div class="footer p-3 mt-5">
+        <div class="row">
+          <div class="col">
+            <p class="text-white m-0">&copy; PyDora 2022 - All rights reserved</p>
+          </div>
+          <div class="col-auto">
+            <p class="text-white m-0">
+              <i class="las la-at"></i> hello@pydora.com
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
 {% block scripts %}
-    
+  
 {% endblock scripts %}
   </body>
 </html>

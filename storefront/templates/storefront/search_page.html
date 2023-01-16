@@ -1,38 +1,35 @@
 {% extends 'partials/base.html'%} 
 {% block searchresult%}
-
-
-<h1>search result</h1>
-<div class="container">
-   <div class="col-md-8 offset-md-2">
+<h1 class="text-center">Search Result</h1>
 {% if query %}
-           <h2>
-           {% with results.count as total_results %}
-           Found {{ total_results }} result{{ total_results|pluralize }}
-           {% endwith %}
-           </h2>
-   {% for c in results %}
-  <a href="{{c.get_url}}"><h3>{{c.name}}</h3></a>
+<h2 class="text-center">
+    {% with results.count as total_results %}
+    Found {{ total_results }} result{{ total_results|pluralize }}
+    {% endwith %}
+</h2>
 
-  <h3>{{c.img}}</h3>
-
-
-   {% empty %}
-
-   <h3>No results found.</h3>
-
-   {% endfor %}
-
-  {% endif %}
-
-        <form action="{% url 'homepage' %}" class="form-inline" method="get">
-
-        <button type="submit" class="btn btn-primary btn-lg mb-2">Back</button>
-
+<div class="container  mt-4">
+    <div class="row">
+        <form action="{% url 'homepage' %}" class="form-inline ml-auto" method="get">
+            <button type="submit" class="btn btn-primary btn-lg">Back</button>
         </form>
-
     </div>
-
+    <div class="row">
+        {% for c in results %}   
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="home-cake-card card mb-3">
+              <a href="{%url 'detailpage' id=c.id %}">
+                <img src="{{c.img.url}}" class="card-img-top"></a>
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">{{c.name}}<h5>
+                </div>
+            </div>
+        </div> 
+        {% empty %}
+        <h3 class="text-center">No results found.</h3>
+        {%endfor%}
+        {% endif %}
+    </div>
 </div>
-
+    
 {% endblock %}
