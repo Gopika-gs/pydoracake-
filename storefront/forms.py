@@ -12,5 +12,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget = forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'}),required = True)
    
 class CustomerCheckoutForm(forms.Form):
+    pincode = forms.CharField(widget = forms.NumberInput(attrs={'class':'form-control','placeholder':'Pincode'}), required=True)
+    date = forms.DateField(widget=forms.DateInput(attrs={'class':'date','id':'datepicker'}),required=True)
     phone = forms.CharField(widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Mobile number'}),max_length= 200, required=True)
     address = forms.CharField(widget = forms.Textarea(attrs={'class':'form-control','placeholder':'Delivery address',"rows":5}),max_length= 2000, required=True)

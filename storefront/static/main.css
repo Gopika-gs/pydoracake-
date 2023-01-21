@@ -112,11 +112,11 @@ table a:hover {
   height: auto;
 }
 
-input[type="radio"]:checked+label:before {
+.choice input[type="radio"]:checked+label:before {
   background-color: #93e026;
 }
 
-input[type="radio"]+label:before {
+.choice input[type="radio"]+label:before {
   content: "";
   display: inline-block;
   width: 25px;
@@ -129,9 +129,16 @@ input[type="radio"]+label:before {
   border-radius: 50%;
 }
 
-input[type="radio"] {
+.choice input[type="radio"] {
   display: none;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 .detailprice {
   font-size: 10px;
@@ -139,6 +146,25 @@ input[type="radio"] {
 
 figure {
   font-size: 14px;
+}
+
+.one {
+  display: none;
+}
+
+.upgradetable input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.upgradetable img {
+  cursor: pointer;
+}
+
+.upgradetable [type=radio]:checked+img {
+  outline: 2px solid rgb(0, 0, 0);
 }
 
 .detail-image {
@@ -162,6 +188,7 @@ ul {
 .left {
   width: 50%;
 }
+
 
 .footer {
   background-color: #393b44;

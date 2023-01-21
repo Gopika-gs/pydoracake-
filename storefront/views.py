@@ -14,8 +14,6 @@ from django.contrib import messages
 from storefront.forms import  CustomerCheckoutForm, LoginForm, RegistrationForm
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import ObjectDoesNotExist
-# Create your views here.
 
 def search(request):
     results = []
@@ -118,7 +116,7 @@ def guestcart(request):
     return render(request,'guestcart.html')
 
 def detailpage(request,id):
-    prod = Products.objects.get(id = id)     
+    prod = Products.objects.get(id = id) 
     if request.user.is_authenticated:  
         usercart = CustomerCart.objects.filter(customer = request.user)
         cart_product_ids = []
@@ -135,9 +133,12 @@ def detailpage(request,id):
 def buynow(request):
     if is_ajax(request=request):
         product_id = int(request.POST['product'])
+        message = request.POST['message']
+        upgrade = request.POST['upgrade']
+        content = request.POST['content']
         user = request.user
         usercart = CustomerCart.objects.filter(customer = request.user)
-        cart_instance = CustomerCart(customer = user,product_id=product_id)
+        cart_instance = CustomerCart(customer = user,product_id=product_id,message=message,upgrade=upgrade,content=content)
         if usercart:
             for item in usercart:
                 if item == cart_instance:
@@ -147,22 +148,23 @@ def buynow(request):
             cart_instance.save()
             print(usercart)
             return JsonResponse({'result':'success'})
- 
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
 def addtocart(request):
     if is_ajax(request=request):
         product_id = int(request.POST['product'])
+        message = request.POST['message']
+        upgrade = request.POST['upgrade']
+        content = request.POST['content']
         user = request.user
         if CustomerCart.objects.filter(customer = user,product_id=product_id):
             return JsonResponse({'result':'failed'})
         else:
-            cart_instance = CustomerCart(customer = user,product_id=product_id)
+            cart_instance = CustomerCart(customer = user,product_id=product_id,message=message,upgrade=upgrade,content=content)
             cart_instance.save()
-            print(cart_instance)
             return JsonResponse({'result':'success'})
-        
+
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
 def removefromcart(request):
@@ -195,6 +197,8 @@ def checkoutcustomer(request):
         user = request.user
         address = request.POST['address']
         phone = request.POST['phone']
+        pincode = request.POST['pincode']
+        date = request.POST['date']
         usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
         totalprice = sum(item.product.price for item in usercart)
         receipt = str(uuid.uuid1())
@@ -213,7 +217,9 @@ def checkoutcustomer(request):
                                             total_amount = totalprice,
                                             reciept_num = receipt,
                                             delivery_address = address,
-                                            delivery_phone = phone)
+                                            delivery_phone = phone,
+                                            pincode = pincode,
+                                            date = date)
         customercheckout_order_instance.save()
         customercheckout = CustomerCheckout.objects.get(id = customercheckout_order_instance.id)
         for item in usercart:
@@ -227,7 +233,7 @@ def checkoutcustomer(request):
                     'amount' : totalprice,
                     'amountscript' : totalprice*100,
                     'currency' : 'INR',
-                    'companyname' : 'Mashupcommrz',
+                    'companyname' : 'PyDoraCake',
                     'username' : request.user.first_name+' '+request.user.last_name,
                     'useremail' : request.user.email,
                     'phonenum' : phone,
