@@ -15,14 +15,21 @@ from storefront.forms import  CustomerCheckoutForm, LoginForm, RegistrationForm
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 
+def cartnum(request):
+    usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
+    totalitems = len(usercart)
+    return {'totalitems':totalitems}
+
+
 def search(request):
     results = []
+    cartn = cartnum(request)
     if request.method == "GET":
         query = request.GET.get('search')
         if query == '':
             query = 'None'
         results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(price__icontains=query))
-    return render(request, 'storefront/search_page.html', {'query': query, 'results': results})
+    return render(request, 'storefront/search_page.html', {'query': query, 'results': results,'cartn':cartn})
 
 
 @login_required(login_url = reverse_lazy('login'))
@@ -31,8 +38,10 @@ def logout(request):
     return redirect("/")
 
 def homepage(request):
+    cartn = cartnum(request)
     categories = Categorys.objects.all()
-    return render(request,'homepage.html',{'categories': categories})
+    return render(request,'homepage.html',{'categories': categories,
+                                            'cartn':cartn})
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
@@ -40,7 +49,7 @@ def is_ajax(request):
 def register(request):
     if request.method == 'POST':
         registerform = RegistrationForm(request.POST)
-
+        cartn = cartnum(request)
         if registerform.is_valid():
             username = registerform.cleaned_data['username']
             email = registerform.cleaned_data['email']
@@ -62,11 +71,11 @@ def register(request):
             
         else:
             registerform = RegistrationForm(request.POST)
-            context = {'registerform':registerform}
+            context = {'registerform':registerform,'cartn':cartn}
             return render(request, 'create-account.html',context)
     else:
         registerform = RegistrationForm()
-    return render(request,'create-account.html',{'registerform':registerform})
+    return render(request,'create-account.html',{'registerform':registerform,'cartn':cartn})
 
 
 def login(request):
@@ -75,6 +84,7 @@ def login(request):
     else:
         if request.method == 'POST':
             login_form = LoginForm(request.POST)
+            cartn = cartnum(request)
             if login_form.is_valid():
                 username = login_form.cleaned_data['username']
                 password = login_form.cleaned_data['password']
@@ -98,25 +108,30 @@ def login(request):
                 return render(request,"login.html",{"form":login_form}) 
         else:
             login_form = LoginForm()
-            return render(request,"login.html",{"form":login_form})
+            return render(request,"login.html",{"form":login_form,'cartn':cartn})
     
 
 def viewMore(request,category_id):
     prod = Products.objects.filter(category = category_id)
+    cartn = cartnum(request)
     usercart = []
-    return render(request,'view_more.html',{'prod': prod})
+    return render(request,'view_more.html',{'prod': prod,'cartn':cartn})
 
 def guestaddtocart(request):
-    return render(request,'guestcart.html')
+    cartn = cartnum(request)
+    return render(request,'guestcart.html',{'cartn':cartn})
 
 def guestcheckoutcustomer(request):
-    return render(request,'storefront/guestcheckout.html')
+    cartn = cartnum(request)
+    return render(request,'storefront/guestcheckout.html',{'cartn':cartn})
 
 def guestcart(request):
-    return render(request,'guestcart.html')
+    cartn = cartnum(request)
+    return render(request,'guestcart.html',{'cartn':cartn})
 
 def detailpage(request,id):
     prod = Products.objects.get(id = id) 
+    cartn = cartnum(request)
     if request.user.is_authenticated:  
         usercart = CustomerCart.objects.filter(customer = request.user)
         cart_product_ids = []
@@ -124,9 +139,9 @@ def detailpage(request,id):
             for item in usercart:
                 cart_product_ids.append(item.product.id)
 
-        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart, 'cart_product_ids': cart_product_ids})
+        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart, 'cart_product_ids': cart_product_ids,'cartn':cartn})
     else:
-        return render(request,'storefront/products_detail.html',{'prod': prod})    
+        return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn})    
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -161,7 +176,11 @@ def addtocart(request):
         if CustomerCart.objects.filter(customer = user,product_id=product_id):
             return JsonResponse({'result':'failed'})
         else:
-            cart_instance = CustomerCart(customer = user,product_id=product_id,message=message,upgrade=upgrade,content=content)
+            cart_instance = CustomerCart(customer = user,
+                                        product_id = product_id,
+                                        message = message,
+                                        upgrade = upgrade,
+                                        content=content)
             cart_instance.save()
             return JsonResponse({'result':'success'})
 
@@ -185,15 +204,18 @@ def removefromcartpage(request,product_id):
 @login_required(login_url = reverse_lazy('login'))                                      
 def viewcustomercart(request):
     usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
+    cartn = cartnum(request)
     totalprice = sum(item.product.price for item in usercart)
-    checkoutForm = CustomerCheckoutForm()
+    totalitems = len(usercart)
     return render(request,'customercart.html',{'usercart':usercart,
                                                         'totalprice':totalprice,
-                                                        'checkoutform':checkoutForm})    
+                                                        'totalitems':totalitems,
+                                                        'cartn':cartn})    
 
 @login_required
 def checkoutcustomer(request):
     if request.method == 'POST':
+        cartn = cartnum(request)
         user = request.user
         address = request.POST['address']
         phone = request.POST['phone']
@@ -237,20 +259,22 @@ def checkoutcustomer(request):
                     'username' : request.user.first_name+' '+request.user.last_name,
                     'useremail' : request.user.email,
                     'phonenum' : phone,
-                    'rzpkey' : 'rzp_test_bAYqeZhjXN8pf0'
+                    'rzpkey' : 'rzp_test_NjFTSrtk8dCDt7',
+                    'cartn':cartn
                     }
         return render(request,'cheackoutform.html',context)
     else:
-      return HttpResponseRedirect(reverse('usercart'))  
+      return HttpResponseRedirect(reverse('homepage'))  
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
 def markpaymentsuccess(request):
-    if request.is_ajax():
+     if is_ajax(request=request):
         order_id = request.POST['order_id']
         payment_id = request.POST['payment_id']
         payment_signature = request.POST['payment_signature']
         user = request.user
+        
         customercart_order_instance = CustomerCheckout.objects.get(order_id = order_id,
                                                                 customer=user)
         customercart_order_instance.payment_signature = payment_signature
@@ -262,4 +286,13 @@ def markpaymentsuccess(request):
         return JsonResponse({'result':'success'})        
              
    
-    
+@csrf_exempt
+@login_required(login_url = reverse_lazy('login'))
+def paymentsuccess(request):
+    cartn = cartnum(request)
+    return render(request,'storefront/paymentsuccess.html',{'cartn':cartn})
+
+def placeorder(request):
+    cartn = cartnum(request)
+    checkoutForm = CustomerCheckoutForm()
+    return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn})

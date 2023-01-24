@@ -1,0 +1,19 @@
+{% extends 'partials/base.html'%} {% load static %} {% block payment_success %}
+<div class="container">
+    <div class="row">
+       <div class="col-md-6 mx-auto mt-5">
+          <div class="payment">
+             <div class="payment_header">
+                <div class="check"><i class="las la-check la-4x"></i></div>
+             </div>
+             <div class="content">
+                <h1>Payment Success !</h1>
+                <p>Your order has been confirmed.</p>
+                <a href="{%url 'homepage' %}">Go to Home</a>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+
+ {% endblock%}

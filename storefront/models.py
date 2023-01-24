@@ -37,7 +37,7 @@ class CustomerCart(models.Model):
     addedon = models.DateTimeField(auto_now_add=True)
     upgrade = models.CharField(choices=UPGRADE_CHOICES,default='1/2kg', max_length=10)
     content = models.CharField(choices=CONTENT_CHOICES,default='egg', max_length=10)
-    message = models.CharField(max_length=25,null=True)
+    message = models.TextField(max_length=40,default=None)
     
 
 class CustomerCheckout(models.Model):
@@ -58,5 +58,4 @@ class customerPayedProducts(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     product_name = models.CharField(max_length=200)
     price = models.FloatField()
-    product_description = models.CharField(max_length=1000)
     checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE, null=False, blank=False)

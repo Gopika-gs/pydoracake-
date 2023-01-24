@@ -1,93 +1,104 @@
 {% extends "partials/base.html" %}
-
-
 {% block cart %}
-<div class="col-12">
-    <!-- Main Content -->
-    <div class="row">
-        <div class="col-12 mt-3 text-center text-uppercase">
-            <h2>Shopping Cart</h2>
-        </div>
-    </div>
-    
-    <main class="row">
-        <div class="col-12 bg-white py-3 mb-3">
-            <div class="row">
-                {%if usercart%}
-                <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive">
-                    <div class="col-12">
-                        <table class="table table-striped table-hover table-sm">
-                            <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody> 
-                                {% for item in usercart %}
+
+<div class="container">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <span class="float-right">(<strong>{{totalitems}}</strong>) items</span>
+                        <h5>Items in your cart</h5>
+                    </div>
+                    {% if usercart%}
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    {% for item in usercart %}
                                 <tr>
                                     <td>
-                                        <img src="{{item.product.img.url}}" class="img-fluid">
-                                        {{item.product.name}}
+                                        <div class="cart-product-imitation">
+                                            <img src="{{item.product.img.url}}" class="img-fluid">
+                                        </div>
+                                    </td>
+                                    <td class="desc">
+                                        <h3>
+                                            <a href="#" class="text-navy">
+                                                {{item.product.name|capfirst}}
+                                            </a>
+                                        </h3> 
+                                        <dl class="small m-b-none">
+                                            <dt>Flavour : {{item.product.flavour|capfirst}} </dt>
+                                            <dt>Weight : {{item.upgrade}}</dt>
+                                            <dt>Contain : {{item.content|capfirst}}</dt>
+                                            <dt>Message on the cake : {{item.message|capfirst}}</dt>
+                                        </dl>
                                     </td>
                                     <td>
-                                        {{item.product.price}}
+                                        <i class="las la-rupee-sign">{{item.product.price}}</i> 
                                     </td>
                                     <td>
-                                        <a href="{%url 'removefromcartpage' product_id=item.product.id%}" class="btn btn-primary">Remove from cart</a>
-                                    </td>  
+                                        <a href = "{%url 'removefromcartpage' product_id=item.product.id%}"><i class="las la-times"></i></a>
+                                    </td>
                                 </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th class="text-right">Total</th>
-                                    <th>{{totalprice}}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                {% endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="ibox-content">
+                        <a href="{% url 'homepage' %}"><button class="btn btn-white"><i class="las la-arrow-left"> Continue shopping</i></button></a>                
+                    </div>
+                    {% else %}
+                    
+                    <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center mt-4 ibox-content">
+                        <h3 class="text-danger text-center">No product is available in cart</h3>
+                        <a href="{% url 'homepage' %}" class="btn btn-sm btn-info mx-auto">KEEP BROWSING</a>
+                    </div>
+                    {% endif %}
+                </div>   
+            </div>
+            <div class="col-md-3">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Cart Summary</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <span>
+                            Total
+                        </span>
+                        <h2 class="font-bold">
+                            <i class="las la-rupee-sign">{{totalprice}}</i>
+                        </h2>
+                        <hr>
+                        
+                        <div class="m-t-sm">
+                            <div class="btn-group">
+                            <a href="{%url 'placeorder'%}" class="btn btn-primary btn-sm"><i class="las la-shopping-bag">Place Order</i></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-12">
-                    <form action="{% url 'checkoutcustomer' %}" method="POST">
-
-                        {%csrf_token%}
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            {{checkoutform.address}}
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            {{checkoutform.phone}}
-                        </div>
-                        <div class="form-group">
-                            <label for="pincode">Pincode</label>
-                            {{checkoutform.pincode}}
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Delivery Date</label>
-                            {{checkoutform.date}}
-                        </div>    
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Contact Us</h5>
+                    </div>
+                    <div class="ibox-content text-center">
+                        <h5><i class="las la-phone"></i> +43 100 783 001</h5>
+                        <span class="small">
+                            Please contact with us if you have any questions. We are avalible 24h.
+                        </span>
+                    </div>
                 </div>
-
-                <div class="col-12 text-right">
-                    <input type="submit" class="btn btn-outline-success" value="Checkout">
-                </div>
-            </form>
-
-        </div>
-                {%else%}
-                <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center">
-                    <h3 class="text-danger text-center">No product is available in cart</h3>
-                    <a href="{% url 'homepage' %}" class="btn btn-sm btn-info mx-auto">KEEP BROWSING</a>
-                </div>
-                {%endif%}
             </div>
         </div>
-    </main>
-    <!-- Main Content -->
+    </div>
 </div>
+
+
+
 {% endblock cart%}
 {% block scripts%}
 <script>

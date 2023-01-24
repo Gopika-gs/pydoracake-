@@ -37,8 +37,9 @@
         "name": "{{companyname}}",
         "order_id": "{{order_id}}",
         "handler": function (response){
+            alert("hello");
             alert(response.razorpay_payment_id);
-            console.log(response)
+            console.log(response);
             sentPaymentInfo(response);
         },
         "prefill": {
@@ -48,7 +49,7 @@
         },
         "notes": {},
         "theme": {
-            "color": "#F37254"
+            "color": "#FF8FAB"
         }
     };
     var rzp1 = new Razorpay(options);
@@ -68,9 +69,10 @@
                 payment_signature:response.razorpay_signature},
           success: function(data) {
             alert('Payment success')
-            window.location.replace("{% url 'usercart' %}");
+            window.location.replace("{% url 'paymentsuccess' %}");
           },
           error: function() { 
+            console.log(data)
             alert("server error");
           }
       });

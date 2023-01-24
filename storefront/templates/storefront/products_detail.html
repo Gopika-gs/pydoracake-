@@ -20,7 +20,7 @@
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="half" checked>
+                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="1/2 KG" checked>
                     <img class="image_upgrade img-responsive" src={{prod.img.url}}>
                 </label>
                 </td>
@@ -35,7 +35,7 @@
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="one">
+                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="1 KG">
                     <img class="image_upgrade img-responsive " src={{prod.img.url}}>
                   </label>
                 </td>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="col">
                   <div class="form-group">
-                    <textarea class="form-control" name="message" rows="1" placeholder="Message On Cake" maxlength="25" id="message"></textarea>
+                    <textarea class="form-control" name="message" rows="2" placeholder="Message On Cake" maxlength="25" id="message"></textarea>
                   </div>
                 </div>
               </div>
@@ -176,6 +176,7 @@
             $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
             $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
             $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
+            location.reload(true);
           },
           error: function() { 
             alert("server error");
@@ -196,6 +197,7 @@
             $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
             $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
             $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
+            location.reload(true);
           },
           error: function() { 
             alert("server error");

@@ -50,7 +50,10 @@
               <a class="text-decoration-none" href="{% url 'usercart' %}">
                 <table>
                   <tr>  
-                    <td><a class="nav-link guest text-center pb-0"><i class="las la-shopping-cart"></i></a></td>
+                    <td>
+                      <span class="count">{{cartn.totalitems}}</span>
+                      <a class="nav-link guest text-center pb-0"><i class="las la-shopping-cart"></i></a>
+                    </td>
                   </tr>
                   <tr>
                     <td><a class="nav-link guest text-center pt-0">Cart</a></td></tr>
@@ -142,12 +145,18 @@
       {% endblock %}
 
       {% block cheackout %}
-      {%endblock%}
+      {% endblock %}
 
       {% block searchresult %}
       {% endblock %}
 
-    
+      {% block payment_success %}
+      {% endblock %}
+
+      {% block Checkout %}
+      {% endblock %}
+
+      
       <!-- Footer -->
       <div class="footer d-flex flex-column min-vh-50  position-static p-3 mt-5">
         <div class="row">

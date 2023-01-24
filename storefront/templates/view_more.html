@@ -6,12 +6,12 @@
   <div class="container  mt-4">
     <div class="row">
         {% for product in prod %}
-      <div class="col-12 col-md-4 col-lg-3">
+      <div class="col-12 col-md-4 col-lg-3  h-200">
         <a class="card-link" href="{% url 'detailpage' id=product.id %}">
           <div class="home-cake-card card mb-3">
               <img src="{{product.img.url}}" class="card-img-top">
               <div class="card-body">
-                <h5 class="card-title font-weight-bold">{{product.name}}</h5> 
+                <h5 class="card-title font-weight-bold ">{{product.name}}</h5> 
                 <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.price}}</h4>             
               </div></a>
           </div>
