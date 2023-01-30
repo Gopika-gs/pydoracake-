@@ -92,6 +92,10 @@ table a:hover {
   object-fit: cover;
 }
 
+.card-title {
+  font-size: 17px;
+}
+
 .login-card {
   width: 300px;
   box-shadow: 0px 5px 29px -7px rgba(0, 0, 0, 0.15);
@@ -255,6 +259,7 @@ ul {
 
 .text-navy {
   color: #f2789f;
+  font-size: 20px;
 }
 
 .text-navy:hover {

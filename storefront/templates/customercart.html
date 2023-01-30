@@ -16,15 +16,15 @@
                             <table class="table shoping-cart-table">
                                 <tbody>
                                     {% for item in usercart %}
-                                <tr>
-                                    <td>
+                                <tr> 
+                                    <td class="col-lg-2">
                                         <div class="cart-product-imitation">
-                                            <img src="{{item.product.img.url}}" class="img-fluid">
+                                            <img src="{{item.product.img.url}}" class="img-fluid w-100 h-100 mt-3">
                                         </div>
                                     </td>
-                                    <td class="desc">
+                                    <td class="col-lg-6 desc">
                                         <h3>
-                                            <a href="#" class="text-navy">
+                                            <a href="{% url 'detailpage' id=item.product.id %}" class="text-navy text-truncate  inline-block">
                                                 {{item.product.name|capfirst}}
                                             </a>
                                         </h3> 
@@ -35,10 +35,15 @@
                                             <dt>Message on the cake : {{item.message|capfirst}}</dt>
                                         </dl>
                                     </td>
-                                    <td>
-                                        <i class="las la-rupee-sign">{{item.product.price}}</i> 
+                                    <td class="col-lg-3 d-flex">
+                                        <a class="btn" id="minus"><i class="las la-minus"></i></a>
+                                        <input class="text-center" id="quantity" type="number" value="0" style="width:20px; border:none;">
+                                        <a class="btn" id="plus"><i class="las la-plus"></i></a>
                                     </td>
-                                    <td>
+                                    <td class="col-lg-2">
+                                        <i class="las la-rupee-sign">{{item.price}}</i> 
+                                    </td>
+                                    <td class="col-lg">
                                         <a href = "{%url 'removefromcartpage' product_id=item.product.id%}"><i class="las la-times"></i></a>
                                     </td>
                                 </tr>
@@ -53,7 +58,7 @@
                     </div>
                     {% else %}
                     
-                    <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center mt-4 ibox-content">
+                    <div class="ibox-content text-center">
                         <h3 class="text-danger text-center">No product is available in cart</h3>
                         <a href="{% url 'homepage' %}" class="btn btn-sm btn-info mx-auto">KEEP BROWSING</a>
                     </div>
@@ -105,5 +110,7 @@
     $( function() {
       $( "#datepicker" ).datepicker();
     } );
+
+    
 </script>
 {% endblock scripts%}

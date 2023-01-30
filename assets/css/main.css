@@ -112,15 +112,13 @@ body {
         padding-left: 0px;
     }
 
+
     #total {
         font-weight: 700;
         padding-left: 9px;
     }
 
-    #image {
-        width: 60px;
-        height: 60px;
-    }
+
 
     .col {
         width: 100%;

@@ -2,7 +2,6 @@
 {% load static %}   
 {% block detail%}
 {% load mathfilters %}
-
   <div class="row w-100">
     <div class="col-sm-6 col-md-6 col-lg position-fixed left ">
       <div class="float-right ">
@@ -12,17 +11,36 @@
     <div class=" col-md-6 col-sm-6 col-lg offset-sm-6 right mr-3">
       <h4>{{prod.name}}</h4>
       <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.price}}</h5>
-      <h6 class="mt-2">Pick an upgrade</h6>
       <form>
+        <h6 class="mt-2">Pick an upgrade</h6>
         <div class="row no-gutters">
+          {%if prod.id in cart_product_ids%}
+          <div class="col-2">
+          {% for item in cartdetail %}
+          <table class="upgradetable">
+            <tr>
+              <td>
+                <label>
+                  <input type="radio" class="d-none" checked>
+                  <img class="image_upgrade img-responsive" src={{prod.img.url}}>
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td><figure>{{item.upgrade}} <br><i class="las la-rupee-sign detailrupee"></i>{{item.price}}</figure></td>  
+            </tr>
+          </table>
+          {% endfor %}
+          </div>
+          {% else %}
           <div class="col-2">
             <table class="upgradetable">
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="1/2 KG" checked>
+                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="1/2 KG" price="{{prod.price}}" checked>
                     <img class="image_upgrade img-responsive" src={{prod.img.url}}>
-                </label>
+                  </label>
                 </td>
               </tr>
               <tr>
@@ -35,7 +53,7 @@
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="1 KG">
+                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="1 KG" price="{{prod.price|mul:2}}">
                     <img class="image_upgrade img-responsive " src={{prod.img.url}}>
                   </label>
                 </td>
@@ -45,22 +63,42 @@
               </tr>
             </table>
           </div>
+          {% endif %}
         </div>
         <div class="container">
           <div class="row">
             <div class="col">
               <div class="row">
+                {%if prod.id in cart_product_ids%}
+                <div class="col choice">
+                {% for item in cartdetail %}
+                <input type="radio" name="radio" id="radio1" checked="true" />
+                  <label class="radio" for="radio1">{{item.content}}</label>
+                {% endfor %}
+                </div>
+                {% else %}
                 <div class="col choice">
                   <input type="radio" value="with egg" name="radio" id="radio1" checked="true" />
                     <label class="radio" for="radio1">With Egg</label>
-                  <input type="radio" value="eggless" name="radio" id="radio2" />
+                  <input type="radio" value="Eggless" name="radio" id="radio2" />
                     <label for="radio2">Eggless</label>
                 </div>
+                {% endif %}
+                {%if prod.id in cart_product_ids%}
+                <div class="col">
+                  <div class="form-group">
+                    {% for item in cartdetail %}
+                    <textarea class="form-control" name="message" rows="2" placeholder="Message On Cake" maxlength="25" id="message" disabled>{{item.message}}</textarea>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
                 <div class="col">
                   <div class="form-group">
                     <textarea class="form-control" name="message" rows="2" placeholder="Message On Cake" maxlength="25" id="message"></textarea>
                   </div>
                 </div>
+                {% endif %}
               </div>
               <div class="row">
                 <div class="col">
@@ -68,7 +106,7 @@
                     {% if user.is_authenticated%}
                     {% if prod.id in cart_product_ids %}
                     <div class="col">
-                      <a id="cartbtn{{prod.id}}" product="{{prod.id}}" href="" class="removefromcart btn btn-dart btn-lg btn-block"><i class="las la-shopping-cart"></i>Remove from cart</a>
+                      <a id="cartbtn{{prod.id}}" product="{{prod.id}}" href="" class="gotocart btn btn-dark btn-lg btn-block"><i class="las la-shopping-cart"></i>Go to Cart</a>
                     </div>
                     {% else %}
                     <div class="col">
@@ -138,18 +176,46 @@
     }
   })
 
+  $(document).on('click','#plus',function(e){
+    e.preventDefault();
+    var i = $("input[id='quantity']").val();
+    i++;
+    if (i >=0 && i<3)
+    $("input[id='quantity']").val(i);
+    else
+    $("input[id='quantity']").val("0");
+    
+});
+$(document).on('click','#minus',function(e){
+    e.preventDefault();
+    e.preventDefault();
+    var i = $("input[id='quantity']").val();
+    i--;
+    if (i >=0 && i<=3)
+    $("input[id='quantity']").val(i);
+    else
+    $("input[id='quantity']").val("0");
+})    
+
+  $(document).on('click','.gotocart',function(e){
+    e.preventDefault();
+    window.location.href = "{%url 'usercart'%}"
+  })
+  
   $(document).on('click','.buynow',function(e){
       e.preventDefault();
       var prod_id = $(this).attr('product');
-      var message = $('#message').serialize();
+      var message = $('#message').val();
       var upgrade = $("input[name='imgbackground']:radio:checked").val();
       var content = $("input[name='radio']:radio:checked").val();
+      var price = $("input[name='imgbackground']:radio:checked").attr('price');
+     
       $.ajax(
     {
         type: "POST",
         url: "{%url 'buynow' %}",
         dataType: 'json',
-        data: {product:prod_id,message:message,upgrade:upgrade,content:content},
+        data: {product:prod_id,message:message,upgrade:upgrade,content:content,price:price},
         success: function(data) {
           window.location.href = "{%url 'usercart'%}"
         },
@@ -163,20 +229,22 @@
     $(document).on('click','.addtocart',function(e){
         e.preventDefault();
         var prod_id = $(this).attr('product');
-        var message = $('#message').serialize();
+        var message = $('#message').val();
         var upgrade = $("input[name='imgbackground']:radio:checked").val();
         var content = $("input[name='radio']:radio:checked").val();
+        var price = $("input[name='imgbackground']:radio:checked").attr('price');
         $.ajax(
       {
           type: "POST",
           url: "{%url 'addtocart' %}",
           dataType: 'json',
-          data: {product:prod_id,message:message,upgrade:upgrade,content:content},
+          data: {product:prod_id,message:message,upgrade:upgrade,content:content,price:price},
           success: function(data) {
-            $('#cartbtn'+prod_id).toggleClass('addtocart removefromcart');
+            $('#cartbtn'+prod_id).toggleClass('addtocart gotocart');
             $('#cartbtn'+prod_id).toggleClass('btn-outline-dark btn-outline-danger');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i>Remove from cart');
-            location.reload(true);
+            $('#cartbtn'+prod_id).html('<i class=" fas fa-times mr-2"></i> Going to cart <i class="las la-spinner"></i>');
+            window.location.href = "{%url 'usercart'%}"
+            
           },
           error: function() { 
             alert("server error");
@@ -196,7 +264,7 @@
           success: function(data) {
             $('#cartbtn'+prod_id).toggleClass('removefromcart addtocart');
             $('#cartbtn'+prod_id).toggleClass('btn-outline-danger btn-outline-dark');
-            $('#cartbtn'+prod_id).html('<i class=" fas fa-cart-plus mr-2"></i>Add to cart');
+            $('#cartbtn'+prod_id).html('<i class="fas fa-cart-plus mr-2"></i> Add to cart');
             location.reload(true);
           },
           error: function() { 

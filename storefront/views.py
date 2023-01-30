@@ -134,12 +134,13 @@ def detailpage(request,id):
     cartn = cartnum(request)
     if request.user.is_authenticated:  
         usercart = CustomerCart.objects.filter(customer = request.user)
+        cartdetail = CustomerCart.objects.filter(customer=request.user,product=prod).values()
         cart_product_ids = []
         if usercart:
             for item in usercart:
-                cart_product_ids.append(item.product.id)
-
-        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart, 'cart_product_ids': cart_product_ids,'cartn':cartn})
+                cart_product_ids.append(item.product.id,)
+        print(cartdetail)
+        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart,'cartdetail':cartdetail, 'cart_product_ids': cart_product_ids,'cartn':cartn})
     else:
         return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn})    
 
@@ -151,9 +152,15 @@ def buynow(request):
         message = request.POST['message']
         upgrade = request.POST['upgrade']
         content = request.POST['content']
+        price = request.POST['price']
         user = request.user
         usercart = CustomerCart.objects.filter(customer = request.user)
-        cart_instance = CustomerCart(customer = user,product_id=product_id,message=message,upgrade=upgrade,content=content)
+        cart_instance = CustomerCart(customer = user,
+                                    product_id=product_id,
+                                    message=message,
+                                    upgrade=upgrade,
+                                    content=content,
+                                    price=price)
         if usercart:
             for item in usercart:
                 if item == cart_instance:
@@ -172,6 +179,7 @@ def addtocart(request):
         message = request.POST['message']
         upgrade = request.POST['upgrade']
         content = request.POST['content']
+        price = request.POST['price']
         user = request.user
         if CustomerCart.objects.filter(customer = user,product_id=product_id):
             return JsonResponse({'result':'failed'})
@@ -180,7 +188,8 @@ def addtocart(request):
                                         product_id = product_id,
                                         message = message,
                                         upgrade = upgrade,
-                                        content=content)
+                                        content=content,
+                                        price=price)
             cart_instance.save()
             return JsonResponse({'result':'success'})
 
@@ -205,7 +214,7 @@ def removefromcartpage(request,product_id):
 def viewcustomercart(request):
     usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
     cartn = cartnum(request)
-    totalprice = sum(item.product.price for item in usercart)
+    totalprice = sum(item.price for item in usercart)
     totalitems = len(usercart)
     return render(request,'customercart.html',{'usercart':usercart,
                                                         'totalprice':totalprice,
@@ -222,7 +231,7 @@ def checkoutcustomer(request):
         pincode = request.POST['pincode']
         date = request.POST['date']
         usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
-        totalprice = sum(item.product.price for item in usercart)
+        totalprice = sum(item.price for item in usercart)
         receipt = str(uuid.uuid1())
         client = razorpay.Client(auth=("rzp_test_NjFTSrtk8dCDt7", "vJjpGBMlQlJ0O0of5Rm7BlP5"))
         DATA = {
