@@ -73,9 +73,11 @@
                   </table>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" id="user-menu" aria-labelledby="dropdownMenuLink">
-                  <a class="dropdown-item dropdown-link" href="#"><i class="las la-phone"></i>Contact Us</a>
+                  <a class="dropdown-item dropdown-link" href="#"><i class="las la-phone"></i> Contact Us</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item dropdown-link" href="{% url 'logout' %}"><i class="las la-user-plus"></i>Logout</a>
+                  <a class="dropdown-item dropdown-link" href="{%url 'viewWishlist' %}"><i class="las la-heart"></i> My wishlist({{wishn.listitem}})</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item dropdown-link" href="{% url 'logout' %}"><i class="las la-user-plus"></i> Logout</a>
                 </div>
               </div>
             </div>
@@ -111,6 +113,8 @@
                   <a class="dropdown-item dropdown-link" href="{% url 'login' %}"><i class="las la-lock-open"></i>Login</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item dropdown-link" href="#"><i class="las la-phone"></i>Contact Us</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item dropdown-link" href="{%url 'wishlist' %}"><i class="las la-heart"></i>My wishlist</a>
                 </div>
               </div>
             </div>
@@ -154,6 +158,9 @@
       {% endblock %}
 
       {% block Checkout %}
+      {% endblock %}
+
+      {% block wishlist %}
       {% endblock %}
 
       

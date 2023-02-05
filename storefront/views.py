@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate
-from .models import  Categorys, CustomerCart, CustomerCheckout, Products, customerPayedProducts
+from .models import  Categorys, CustomerCart, CustomerCheckout, Products, WishList, customerPayedProducts
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -20,16 +20,21 @@ def cartnum(request):
     totalitems = len(usercart)
     return {'totalitems':totalitems}
 
+def wishnum(request):
+    wishlist = WishList.objects.filter(customer = request.user).select_related('product')
+    listitem = len(wishlist)
+    return {'listitem':listitem}
 
 def search(request):
     results = []
     cartn = cartnum(request)
+    wishn = wishnum(request)
     if request.method == "GET":
         query = request.GET.get('search')
         if query == '':
             query = 'None'
         results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(price__icontains=query))
-    return render(request, 'storefront/search_page.html', {'query': query, 'results': results,'cartn':cartn})
+    return render(request, 'storefront/search_page.html', {'query': query, 'results': results,'cartn':cartn,'wishn':wishn})
 
 
 @login_required(login_url = reverse_lazy('login'))
@@ -39,9 +44,11 @@ def logout(request):
 
 def homepage(request):
     cartn = cartnum(request)
+    wishn = wishnum(request)
     categories = Categorys.objects.all()
     return render(request,'homepage.html',{'categories': categories,
-                                            'cartn':cartn})
+                                            'cartn':cartn,
+                                            'wishn':wishn})
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
@@ -50,6 +57,7 @@ def register(request):
     if request.method == 'POST':
         registerform = RegistrationForm(request.POST)
         cartn = cartnum(request)
+        wishn = wishnum(request)
         if registerform.is_valid():
             username = registerform.cleaned_data['username']
             email = registerform.cleaned_data['email']
@@ -71,11 +79,11 @@ def register(request):
             
         else:
             registerform = RegistrationForm(request.POST)
-            context = {'registerform':registerform,'cartn':cartn}
+            context = {'registerform':registerform,'cartn':cartnn,'wishn':wishn}
             return render(request, 'create-account.html',context)
     else:
         registerform = RegistrationForm()
-    return render(request,'create-account.html',{'registerform':registerform,'cartn':cartn})
+    return render(request,'create-account.html',{'registerform':registerform,'cartn':cartn,'wishn':wishn})
 
 
 def login(request):
@@ -85,6 +93,7 @@ def login(request):
         if request.method == 'POST':
             login_form = LoginForm(request.POST)
             cartn = cartnum(request)
+            wishn = wishnum(request)
             if login_form.is_valid():
                 username = login_form.cleaned_data['username']
                 password = login_form.cleaned_data['password']
@@ -108,30 +117,37 @@ def login(request):
                 return render(request,"login.html",{"form":login_form}) 
         else:
             login_form = LoginForm()
-            return render(request,"login.html",{"form":login_form,'cartn':cartn})
+            return render(request,"login.html",{"form":login_form,'cartn':cartn,'wishn':wishn})
     
 
 def viewMore(request,category_id):
     prod = Products.objects.filter(category = category_id)
     cartn = cartnum(request)
+    wishn = wishnum(request)
     usercart = []
-    return render(request,'view_more.html',{'prod': prod,'cartn':cartn})
+    wishlist =[]
+    
+    return render(request,'view_more.html',{'prod': prod,'cartn':cartn,'wishn':wishn})
 
 def guestaddtocart(request):
     cartn = cartnum(request)
-    return render(request,'guestcart.html',{'cartn':cartn})
+    wishn = wishnum(request)
+    return render(request,'guestcart.html',{'cartn':cartn,'wishn':wishn})
 
 def guestcheckoutcustomer(request):
     cartn = cartnum(request)
-    return render(request,'storefront/guestcheckout.html',{'cartn':cartn})
+    wishn = wishnum(request)
+    return render(request,'storefront/guestcheckout.html',{'cartn':cartn,'wishn':wishn})
 
 def guestcart(request):
     cartn = cartnum(request)
-    return render(request,'guestcart.html',{'cartn':cartn})
+    wishn = wishnum(request)
+    return render(request,'guestcart.html',{'cartn':cartn,'wishn':wishn})
 
 def detailpage(request,id):
     prod = Products.objects.get(id = id) 
     cartn = cartnum(request)
+    wishn = wishnum(request)
     if request.user.is_authenticated:  
         usercart = CustomerCart.objects.filter(customer = request.user)
         cartdetail = CustomerCart.objects.filter(customer=request.user,product=prod).values()
@@ -140,9 +156,13 @@ def detailpage(request,id):
             for item in usercart:
                 cart_product_ids.append(item.product.id,)
         print(cartdetail)
-        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart,'cartdetail':cartdetail, 'cart_product_ids': cart_product_ids,'cartn':cartn})
+        return render(request,'storefront/products_detail.html',{'prod': prod,'usercart':usercart,
+                                                                    'cartdetail':cartdetail, 
+                                                                    'cart_product_ids': cart_product_ids,
+                                                                    'cartn':cartn,
+                                                                    'wishn':wishn})
     else:
-        return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn})    
+        return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn,'wishn':wishn})    
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -170,6 +190,36 @@ def buynow(request):
             cart_instance.save()
             print(usercart)
             return JsonResponse({'result':'success'})
+
+@csrf_exempt    
+def addtowishlist(request):
+    if is_ajax(request=request):
+        product_id = int(request.POST['product'])
+        customer = request.user
+        print(product_id)
+        wishlist = WishList (customer = customer,
+                            product_id = product_id)
+        wishlist.save()
+        return JsonResponse({'result':'success'})
+
+def viewWishlist(request):
+    wishlist = WishList.objects.filter(customer = request.user).select_related('product')
+    wishn = wishnum(request)
+    cartn = cartnum(request)
+    listitem = len(wishlist)
+    wishlistdetail = CustomerCart.objects.filter(customer=request.user).values()
+    print(wishlist)
+    return render(request,'storefront/wishlist.html',{'wishlist':wishlist,'listitem':listitem,'wishn':wishn,'cartn':cartn})
+
+@csrf_exempt
+def removefromwishlist(request):
+     if is_ajax(request=request):
+        product_id = int(request.POST['product'])
+        user = request.user
+        wishlist = WishList.objects.filter(customer = user,product_id=product_id)
+        wishlist.delete()
+        return JsonResponse({'result':'success'})
+
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -213,18 +263,32 @@ def removefromcartpage(request,product_id):
 @login_required(login_url = reverse_lazy('login'))                                      
 def viewcustomercart(request):
     usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
-    cartn = cartnum(request)
+    cartn = cartnum(request) 
+    wishn = wishnum(request)
     totalprice = sum(item.price for item in usercart)
+    print("totalprice", totalprice)
     totalitems = len(usercart)
     return render(request,'customercart.html',{'usercart':usercart,
                                                         'totalprice':totalprice,
                                                         'totalitems':totalitems,
-                                                        'cartn':cartn})    
+                                                      'cartn':cartn,
+                                                      'wishn':wishn})  
+@csrf_exempt                                                     
+def quantity(request):
+    if is_ajax(request=request):
+        user = request.user
+        product_id = int(request.POST['product'])
+        price = int(request.POST['price'])
+        qty = int(request.POST['qty'])
+        cart_instance = CustomerCart.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty,price=price)
+        
+        return JsonResponse({'result':'success'})
 
 @login_required
 def checkoutcustomer(request):
     if request.method == 'POST':
         cartn = cartnum(request)
+        wishn = wishnum(request)
         user = request.user
         address = request.POST['address']
         phone = request.POST['phone']
@@ -269,7 +333,8 @@ def checkoutcustomer(request):
                     'useremail' : request.user.email,
                     'phonenum' : phone,
                     'rzpkey' : 'rzp_test_NjFTSrtk8dCDt7',
-                    'cartn':cartn
+                    'cartn':cartn,
+                    'wishn':wishn
                     }
         return render(request,'cheackoutform.html',context)
     else:
@@ -299,9 +364,11 @@ def markpaymentsuccess(request):
 @login_required(login_url = reverse_lazy('login'))
 def paymentsuccess(request):
     cartn = cartnum(request)
-    return render(request,'storefront/paymentsuccess.html',{'cartn':cartn})
+    wishn = wishnum(request)
+    return render(request,'storefront/paymentsuccess.html',{'cartn':cartn,'wishn':wishn})
 
 def placeorder(request):
     cartn = cartnum(request)
+    wishn = wishnum(request)
     checkoutForm = CustomerCheckoutForm()
-    return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn})
+    return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn,'wishn':wishn})

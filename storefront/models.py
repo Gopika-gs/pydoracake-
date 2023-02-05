@@ -37,12 +37,15 @@ class CustomerCart(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     product = models.ForeignKey(Products, on_delete=models.CASCADE, null=False, blank=False)
     price  = models.IntegerField(default=0,null=False)
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=1)
     addedon = models.DateTimeField(auto_now_add=True)
     upgrade = models.CharField(choices=UPGRADE_CHOICES,default='1/2kg', max_length=10)
     content = models.CharField(choices=CONTENT_CHOICES,default='egg', max_length=10)
     message = models.CharField(max_length=40,default=None)
-    
+
+class WishList(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=False, blank=False)
 
 class CustomerCheckout(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)

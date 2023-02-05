@@ -10,10 +10,11 @@
         <div class="card h-100">
           <a class="card-link" href="{% url 'detailpage' id=product.id %}">
             <div class="home-cake-card card h-100">
+              <span id="heart{{prod.id}}" class="heart addtowishlist"  product="{{product.id}}"><i class="las la-heart"></i></span>
                 <img src="{{product.img.url}}" class="card-img-top">
                 <div class="card-body">
                   <h5 class="card-title font-weight-bold ">{{product.name}}</h5> 
-                  <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.price}}</h4>             
+                  <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.price}}</h4>
                 </div></a>
             </div>
         </div>
@@ -22,3 +23,27 @@
     </div>
   </div>
 {% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+  $(document).on('click','.addtowishlist',function(e){
+    e.preventDefault();
+    var product = $(this).attr('product');
+    $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'addtowishlist'%}",
+          dataType: 'json',
+          data: {product:product},
+          success: function(data) {
+            $('#heart'+product)
+            location.reload(true)
+            
+          },
+          error: function() { 
+            alert("server error");
+            console.log(product)
+          }
+      });
+  });
+</script>
+{% endblock scripts %}

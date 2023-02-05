@@ -1,5 +1,6 @@
 {% extends "partials/base.html" %}
 {% block cart %}
+{% load mathfilters %}
 
 <div class="container">
     <div class="wrapper wrapper-content animated fadeInRight">
@@ -23,7 +24,7 @@
                                         </div>
                                     </td>
                                     <td class="col-lg-6 desc">
-                                        <h3>
+                                        <h3 class="mt-3">
                                             <a href="{% url 'detailpage' id=item.product.id %}" class="text-navy text-truncate  inline-block">
                                                 {{item.product.name|capfirst}}
                                             </a>
@@ -36,12 +37,17 @@
                                         </dl>
                                     </td>
                                     <td class="col-lg-3 d-flex">
-                                        <a class="btn" id="minus"><i class="las la-minus"></i></a>
-                                        <input class="text-center" id="quantity" type="number" value="0" style="width:20px; border:none;">
-                                        <a class="btn" id="plus"><i class="las la-plus"></i></a>
+                                        
+                                        <a class="btn btnquan btn-qty-minus" price="{{item.product.price}}" product="{{item.product.id}}" ><i class="las la-minus"></i></a>
+                                        <input class="text-center item-qty" type="number" value="{{item.quantity}}"  style="width:20px; border:none;">
+                                        <a class="btn btnquan btn-qty-plus" price="{{item.product.price}}" product="{{item.product.id}}" ><i class="las la-plus"></i></a>
                                     </td>
                                     <td class="col-lg-2">
+                                        {% if item.p_qty == 1 %}
                                         <i class="las la-rupee-sign">{{item.price}}</i> 
+                                        {% else %}
+                                        <i class="las la-rupee-sign">{{item.p_qty}}</i> 
+                                        {% endif %}
                                     </td>
                                     <td class="col-lg">
                                         <a href = "{%url 'removefromcartpage' product_id=item.product.id%}"><i class="las la-times"></i></a>
@@ -110,7 +116,56 @@
     $( function() {
       $( "#datepicker" ).datepicker();
     } );
+    
+    $(".btn-qty-minus").click(function (){
+        var product = $(this).attr('product');
+        let qty = Number($(this).parent().find("input").val());
+        var price= $(this).attr('price');
+        qty = qty-1;
+        if(qty<1) qty = 1;
+        $(this).parent().find("input").val(qty);
+        price = price*qty
+        $.ajax(
+            {
+                type: "POST",
+                url: "{%url 'quantity' %}",
+                data:{qty:qty,product:product,price:price},
+                success: function(data) {
+                    console.log("success")
+                    console.log(price)
+                    location.reload(true);
+                }
+            
+            }
+        )
+        
 
+    });
+    
+    $(".btn-qty-plus").click(function (){
+        var product = $(this).attr('product');
+        let qty = Number($(this).parent().find("input").val());
+        var price= $(this).attr('price');
+        qty = qty+1;
+        if(qty>4) qty = 4;
+        $(this).parent().find("input").val(qty);
+        price = price*qty
+        $.ajax(
+            {
+                type: "POST",
+                url: "{%url 'quantity' %}",
+                data:{qty:qty,product:product,price:price},
+                success: function(data) {
+                    console.log("success")
+                    console.log(price)
+                    location.reload(true);
+                }
+            
+            }
+        )
+        
+        
+    });
     
 </script>
 {% endblock scripts%}

@@ -1,0 +1,83 @@
+{% extends "partials/base.html" %}
+{% block wishlist %}
+<div class="container">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <span class="float-right">(<strong>{{listitem}}</strong>) items</span>
+                        <h5>Items in your cart</h5>
+                    </div>
+                    {% if wishlist%}
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    {% for item in wishlist %}
+                                    <div class="card card-body">
+                                        <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                                            <div class="mr-2 mb-3 mb-lg-0">
+                                                <img src="{{item.product.img.url}}" width="150" height="150" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="media-title font-weight-semibold">
+                                                    <a href="#" data-abc="true">{{item.product.name}}</a>
+                                                </h6>
+                                                 <ul class="list-inline list-inline-dotted mb-0">
+                                                    <li class="list-inline-item">Cake Flavour-{{item.product.flavour|capfirst}}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
+                                                <h3 class="mb-0 font-weight-semibold"><i class="las la-rupee-sign">{{item.product.price}}</i> </h3>
+                                                <button type="button" product="{{item.product.id}}" class=" removefromwishlist btn btn-primary mt-4 text-white"><i class="icon-cart-add mr-2"></i> Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                {% endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="ibox-content">
+                        <a href="{% url 'homepage' %}"><button class="btn btn-white"><i class="las la-arrow-left">Back</i></button></a>                
+                    </div>
+                    {% else %}
+                    
+                    <div class="ibox-content text-center">
+                        <h3 class="text-danger text-center">Empty wishlist</h3>
+                        <h4 class="text-danger text-center">You have no items in your wishlist.</h4>
+                        <a href="{% url 'homepage' %}" class="btn btn-sm btn-info mx-auto"> START ADDING</a>
+                    </div>
+                    {% endif %}
+                </div>   
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).on('click','.removefromwishlist',function(e){
+        var product = $(this).attr('product');
+        $.ajax(
+      {
+        type: "POST",
+        url: "{%url 'removefromwishlist' %}",
+        dataType: 'json',
+        data: {product:product},
+        success: function(data) {
+            console.log(product)
+            location.reload(true);
+        },
+        error: function() { 
+            console.log(product)
+            location.reload(true);
+        }
+    })
+})
+</script>
+{% endblock %}

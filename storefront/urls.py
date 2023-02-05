@@ -23,5 +23,8 @@ urlpatterns=[
     path('buynow', views.buynow, name='buynow'),
     path('paymentsuccess', views.paymentsuccess, name='paymentsuccess'),
     path('placeorder',views.placeorder, name='placeorder'),
-     
+    path('quantity',views.quantity,name='quantity'),
+    path('addtowishlist',views.addtowishlist, name='addtowishlist'),
+    path('viewWishlist',views.viewWishlist , name='viewWishlist'),
+    path('removefromwishlist', views.removefromwishlist, name='removefromwishlist'),
 ]
