@@ -1,0 +1,17 @@
+{% extends "partials/base.html" %}
+
+
+{% block guestwishlist %}
+<div class="row">
+    <div class="col-12 mt-3 text-center text-uppercase">
+        <h2>My Wishlist</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive text-center">
+        <h3 class="text-danger text-center">Register to add products to the wishlist </h3>
+        <a href="{% url 'register' %}" class="btn btn-sm btn-info mx-auto">Register</a>
+    </div>
+</div>
+
+{% endblock %}

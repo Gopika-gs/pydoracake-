@@ -2,7 +2,6 @@ import uuid , razorpay
 from django.views.generic import  ListView
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User,auth
@@ -12,14 +11,16 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from storefront.forms import  CustomerCheckoutForm, LoginForm, RegistrationForm
-from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 
+
+@login_required
 def cartnum(request):
     usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
     totalitems = len(usercart)
     return {'totalitems':totalitems}
 
+@login_required
 def wishnum(request):
     wishlist = WishList.objects.filter(customer = request.user).select_related('product')
     listitem = len(wishlist)
@@ -79,7 +80,7 @@ def register(request):
             
         else:
             registerform = RegistrationForm(request.POST)
-            context = {'registerform':registerform,'cartn':cartnn,'wishn':wishn}
+            context = {'registerform':registerform,'cartn':cartn,'wishn':wishn}
             return render(request, 'create-account.html',context)
     else:
         registerform = RegistrationForm()
@@ -117,18 +118,8 @@ def login(request):
                 return render(request,"login.html",{"form":login_form}) 
         else:
             login_form = LoginForm()
-            return render(request,"login.html",{"form":login_form,'cartn':cartn,'wishn':wishn})
+            return render(request,"login.html",{"form":login_form,})
     
-
-def viewMore(request,category_id):
-    prod = Products.objects.filter(category = category_id)
-    cartn = cartnum(request)
-    wishn = wishnum(request)
-    usercart = []
-    wishlist =[]
-    
-    return render(request,'view_more.html',{'prod': prod,'cartn':cartn,'wishn':wishn})
-
 def guestaddtocart(request):
     cartn = cartnum(request)
     wishn = wishnum(request)
@@ -143,6 +134,24 @@ def guestcart(request):
     cartn = cartnum(request)
     wishn = wishnum(request)
     return render(request,'guestcart.html',{'cartn':cartn,'wishn':wishn})
+
+def viewMore(request,category_id):
+    prod = Products.objects.filter(category = category_id)
+    cartn = cartnum(request)
+    wishn = wishnum(request)
+    list_product_ids = []
+    page_product_ids = []
+    if request.user.is_authenticated:
+        wishlist = WishList.objects.filter(customer = request.user)
+        for item in wishlist:
+            list_product_ids.append(item.product.id)
+            print(list_product_ids)
+        return render(request,'view_more.html',{'prod': prod,
+                                                'cartn':cartn,
+                                                'wishn':wishn,
+                                                'wishlist':wishlist,
+                                                'list_product_ids':list_product_ids,
+                                                })
 
 def detailpage(request,id):
     prod = Products.objects.get(id = id) 
@@ -191,25 +200,16 @@ def buynow(request):
             print(usercart)
             return JsonResponse({'result':'success'})
 
-@csrf_exempt    
-def addtowishlist(request):
-    if is_ajax(request=request):
-        product_id = int(request.POST['product'])
-        customer = request.user
-        print(product_id)
-        wishlist = WishList (customer = customer,
-                            product_id = product_id)
-        wishlist.save()
-        return JsonResponse({'result':'success'})
-
 def viewWishlist(request):
     wishlist = WishList.objects.filter(customer = request.user).select_related('product')
     wishn = wishnum(request)
     cartn = cartnum(request)
     listitem = len(wishlist)
-    wishlistdetail = CustomerCart.objects.filter(customer=request.user).values()
     print(wishlist)
     return render(request,'storefront/wishlist.html',{'wishlist':wishlist,'listitem':listitem,'wishn':wishn,'cartn':cartn})
+
+def guestwishlist(request):
+    return render(request,'storefront/guestwishlist.html')
 
 @csrf_exempt
 def removefromwishlist(request):
@@ -220,6 +220,18 @@ def removefromwishlist(request):
         wishlist.delete()
         return JsonResponse({'result':'success'})
 
+@csrf_exempt    
+def addtowishlist(request):
+    if is_ajax(request=request):
+        product_id = int(request.POST['product'])
+        customer = request.user
+        print(product_id)
+        if WishList.objects.filter(customer = customer,product_id=product_id):
+            return JsonResponse({'result':'failed'})
+        else:
+            wishlist = WishList (customer = customer,product_id = product_id)
+            wishlist.save()
+            return JsonResponse({'result':'success'})
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))

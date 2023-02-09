@@ -428,3 +428,7 @@ input[type=number] {
   -o-transition: all 1s ease;
   transition: all 1s ease-in-out;
 }
+
+.addedtowishlist {
+  color: red;
+}
