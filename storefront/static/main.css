@@ -432,3 +432,8 @@ input[type=number] {
 .addedtowishlist {
   color: red;
 }
+
+.media-body .media-title a {
+  color: #f2789f !important;
+  text-decoration: none;
+}
