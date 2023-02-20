@@ -2,25 +2,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from adminpannel.models import Products
 
-
-
-class Categorys(models.Model):
-    img = models.ImageField(upload_to='pics')
-    name = models.CharField(max_length=100)
-    def __str__(self):
-        return self.name
-
-
-class Products(models.Model):
-    img = models.ImageField(upload_to='pics')
-    name = models.CharField( max_length=100)
-    category = models.ForeignKey(Categorys, on_delete=models.CASCADE , null=True)
-    flavour = models.CharField(max_length=100,default='chocolate')
-    price = models.IntegerField()
-    shape = models.CharField(max_length=50)
-    size = models.IntegerField(default='6')
-  
 UPGRADE_CHOICES = (
     ('1/2kg','1/2kg'),
     ('1kg','1kg')
@@ -30,8 +13,6 @@ CONTENT_CHOICES = (
     ('egg','egg'),
     ('eggless','eggless')
 )  
-
-
 
 class CustomerCart(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
@@ -66,3 +47,17 @@ class customerPayedProducts(models.Model):
     product_name = models.CharField(max_length=200)
     price = models.FloatField()
     checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE, null=False, blank=False)
+
+RATING = (
+    (1,'1'),
+    (2,'2'),
+    (3,'3'),
+    (4,'4'),
+    (5,'5'),
+)
+
+class ProductReview(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=False, blank=False)
+    rreview_text = models.TextField()
+    review_rating = models.CharField(choices=RATING,max_length=150)

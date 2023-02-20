@@ -1,4 +1,4 @@
-import uuid , razorpay
+import uuid,razorpay
 from django.views.generic import  ListView
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate
-from .models import  Categorys, CustomerCart, CustomerCheckout, Products, WishList, customerPayedProducts
+from adminpannel.models import  Categorys, Products
+from .models import CustomerCart, CustomerCheckout, WishList, customerPayedProducts
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -84,7 +85,7 @@ def register(request):
             return render(request, 'create-account.html',context)
     else:
         registerform = RegistrationForm()
-    return render(request,'create-account.html',{'registerform':registerform,'cartn':cartn,'wishn':wishn})
+    return render(request,'create-account.html',{'registerform':registerform,})
 
 
 def login(request):
