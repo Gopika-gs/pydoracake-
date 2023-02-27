@@ -1,0 +1,114 @@
+{% extends 'adminbase.html'%} {% load static %} 
+
+{%block content%}
+<div class="content-wrapper mt-4 pt-4">
+    <div class="row">
+      <div class="col-12">
+          <table class="table table-image">
+            <thead>
+              <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Date Joined</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+                <th scope="col">View</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            {% for user in users %}
+            <tbody>
+              <tr>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.date_joined}}</td>
+                <td>
+                {% if user.is_active == 1 %}
+                <strong id="statustext{{user.id}}" class="text-success">Active</strong>
+                {%else%}
+                <strong id="statustext{{user.id}}" class="text-danger">Inactive</strong>
+                {%endif%}
+                </td>
+                <td>
+                {% if user.is_active == 1 %}
+                <a id="statusbtn{{user.id}}" href="" user_id ="{{user.id}}" class="disablebtn btn btn-sm btn-danger">Disable</a>
+                {%else%}
+                <a id="statusbtn{{user.id}}" href="" user_id ="{{user.id}}" class="enablebtn btn btn-sm btn-success">Enable</a>
+                {%endif%}
+                </td>
+                <td><a target="_self" href="{% url 'userdetail' user_id=user.id %}"  class="view btn btn-sm btn-primary">View</a></td>
+                <td><a data-toggle="modal" data-target="#myModal3" user_id ="{{user.id}}" href="" class="deleteuser btn btn-sm btn-danger">Delete</a></td>
+              </tr>
+            </tbody>
+            {% endfor %}
+          </table>   
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{%block scripts%}
+<script>
+    $(document).on('click','.deleteuser',function(e){
+        e.preventDefault();
+        var user_id = $(this).attr('user_id');
+    $.ajax(
+        {
+            type: "POST",
+            url: "{%url 'deleteuser' %}",
+            dataType: 'json',
+            data: {user_id:user_id},
+            success: function(data) {
+                location.reload(true)
+            },
+            error: function() { 
+            }
+        });
+    });
+
+    $(document).on('click','.disablebtn',function(e){
+        e.preventDefault();
+        var user_id = $(this).attr('user_id');
+        $.ajax(
+          {
+              type: "POST",
+              url: "{%url 'changestatususer'%}",
+              dataType: 'json',
+              data: {action:'disable',user_id:user_id},
+              success: function(data) {
+                $('#statustext'+user_id).text('Inactive');
+                $('#statustext'+user_id).toggleClass('text-success text-danger');
+                $('#statusbtn'+user_id).toggleClass('disablebtn enablebtn');
+                $('#statusbtn'+user_id).toggleClass('btn-danger btn-success');
+                $('#statusbtn'+user_id).text('Enable');
+              },
+              error: function() { 
+                alert("server error");
+              }
+          });
+      });
+    
+      $(document).on('click','.enablebtn',function(e){
+        e.preventDefault();
+        var user_id = $(this).attr('user_id');
+        $.ajax(
+          {
+              type: "POST",
+              url: "{%url 'changestatususer'%}",
+              dataType: 'json',
+              data: {action:'enable',user_id:user_id},
+              success: function(data) {
+                $('#statustext'+user_id).text('Active');
+                $('#statustext'+user_id).toggleClass('text-danger text-success');
+                $('#statusbtn'+user_id).toggleClass('enablebtn disablebtn');
+                $('#statusbtn'+user_id).toggleClass('btn-success btn-danger');
+                $('#statusbtn'+user_id).text('Disable');
+              },
+              error: function() { 
+                alert("server error");
+              }
+          });
+      });
+
+</script>
+{% endblock %}

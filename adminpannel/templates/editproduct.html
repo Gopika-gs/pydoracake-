@@ -1,4 +1,4 @@
-{% extends 'adminbase.html'%} {% load static %} 
+{% extends 'adminbase.html'%} {% load static %}
 
 {%block content%}
 <div class="content-wrapper mt-4 pt-4">
@@ -7,12 +7,13 @@
       <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-xl-9">
-            <h1 class="text-white mb-4">Add Products</h1>
+            <h1 class="text-white mb-4">Edit Products</h1>
             {% for message in messages %}
             <div class="alert alert-success">
               <a href="#" class="alert-link">{{ message }}</a>.
             </div>
             {% endfor%}
+            {% for item in product %}
             <div class="card" style="border-radius: 15px;">
               <div class="card-body">
                 <div class="row align-items-center pt-4 pb-3">
@@ -20,7 +21,7 @@
                     <h6 class="mb-0">Products Name</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="text" name="name" class="form-control form-control-lg" />
+                    <input type="text" name="name" value="{{item.name}}"class="form-control form-control-lg" />
                   </div>
                 </div>
                 <hr class="mx-n3">
@@ -29,8 +30,10 @@
                       <h6 class="mb-0">Product Image</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                      <input class="form-control form-control-lg" name="img" type="file" />
-                      <div class="small text-muted mt-2">Upload Image</div>
+                    <img src="{{item.img.url}}" class="img-fluid img-thumbnail w-25" alt="choosen image">
+                    <figcaption>Choosen image</figcaption>
+                      <input class="form-control form-control-lg" name="img" type="file"/>
+                      <div class="small text-muted mt-2"></div>
                   </div>
               </div>
                 <hr class="mx-n3">
@@ -41,9 +44,8 @@
                   <div class="input-prepend input-append">
                     <div class="btn-group">
                       <select name="category" title="">
-                        <option value=""></option>
                         {% for cat in category %}
-                        <option value="{{cat.id}}">{{cat.name}}</option>
+                        <option value="{{cat.id}}" {% if cat.id == item.category_id %}selected{% endif %}>{{cat.name}}</option>
                         {% endfor %}
                       </select>
                     </div>
@@ -55,7 +57,7 @@
                     <h6 class="mb-0">Price</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="number" name="price" class="form-control form-control-lg" />
+                    <input type="number" value="{{item.price}}" name="price" class="form-control form-control-lg" />
                   </div>
                 </div>
                 <hr class="mx-n3">
@@ -64,7 +66,7 @@
                     <h6 class="mb-0">Flavour</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="text" name="flavour"class="form-control form-control-lg" />
+                    <input type="text" value="{{item.flavour}}" name="flavour"class="form-control form-control-lg" />
                   </div>
                 </div>
                 <hr class="mx-n3">
@@ -73,7 +75,7 @@
                     <h6 class="mb-0">Shape</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="text" name="shape" class="form-control form-control-lg" />
+                    <input type="text" value="{{item.shape}}" name="shape" class="form-control form-control-lg" />
                   </div>
                 </div>
                 <hr class="mx-n3">
@@ -82,15 +84,17 @@
                     <h6 class="mb-0">Size</h6>
                   </div>
                   <div class="col-md-9 pe-5">
-                    <input type="number" name="size" class="form-control form-control-lg" />
+                    <input type="number" value="{{item.size}}" name="size" class="form-control form-control-lg" />
                   </div>
                 </div>
                 <hr class="mx-n3">
                 </div>
                 <div class="px-5 py-4">
-                  <button type="button"  class="btn btn-primary btn-lg addprod">Save and add another</button>
+                  <input type="hidden" name="product_id" value="{{ item.id }}">
+                  <button type="button" name= "editsave" class="btn btn-primary btn-lg editprod">Save </button>
                 </div>
               </div>
+              {% endfor %}
             </div>
           </div>
         </div>
@@ -98,17 +102,16 @@
     </form>
   </section>
 </div>
-
 {%endblock%}
 
 {% block scripts %}
 <script>
- 
-   $(document).on('click','.addprod',function(e){
+
+  $(document).on('click','.editprod',function(e){
     var formData = new FormData($("#image-upload-form")[0]);
     $.ajax({
         type:'POST',
-        url: "{%url 'addingproduct' %}",
+        url: "{% url 'savingedit' %}",
         data:formData,
         cache:false,
         contentType: false,

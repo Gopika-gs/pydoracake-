@@ -1,0 +1,17 @@
+{% extends 'adminbase.html'%} {% load static %} 
+{% block content %}
+<div class="content-wrapper mt-4 pt-4">
+  <section class="wrapper" style="background-color: #FF8FAB;">
+    <div class="row">
+        <div class="col-md-12 salesreport">
+          <section class="panel p-5">
+            <header class="panel-heading no-border">
+              <h1 style="font-weight: 700;">Generate Reports</h1>
+            </header>
+            <a style="margin: 20px;" href="{% url 'todayssalesreport' %}" class="btn btn-sm btn-dark">Todays sales Report</a>
+          </section>
+        </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

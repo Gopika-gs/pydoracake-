@@ -10,7 +10,6 @@ def get_upload_path(instance, filename):
         filename
     )
 
-
 class Categorys(models.Model):
     img = models.ImageField(upload_to=get_upload_path)
     name = models.CharField(max_length=100)
@@ -26,7 +25,7 @@ STOCK = (
 class Products(models.Model):
     img = models.ImageField(upload_to='pics')
     name = models.CharField( max_length=100)
-    category = models.CharField(max_length=50,default='')
+    category = models.ForeignKey(Categorys, on_delete=models.CASCADE)
     flavour = models.CharField(max_length=100,default='chocolate')
     price = models.IntegerField()
     shape = models.CharField(max_length=50)

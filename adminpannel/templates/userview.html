@@ -1,0 +1,33 @@
+{% extends 'adminbase.html'%} {% load static %} 
+
+
+{% block content %}
+<!-- HTML code -->
+<div class="content-wrapper mt-4 pt-4">
+  <table class="table container table-striped">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Order Id</th>
+        <th>Reciept</th>
+        <th>Amount</th>
+        <th>Phone</th>
+        <th>Order Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+            <td>{{order.product_name}}</td>
+            <td>{{order.checkout_details.order_id}}</td>
+            <td>{{order.checkout_details.reciept_num}}</td>
+            <td>{{order.price}}</td>
+            <td>{{order.checkout_details.delivery_phone}}</td>
+            <td>{{order.checkout_details.total_amount}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+  
+{% endblock %}

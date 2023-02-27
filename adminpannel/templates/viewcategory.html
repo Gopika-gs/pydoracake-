@@ -1,0 +1,36 @@
+{% extends 'adminbase.html'%} {% load static %} 
+
+{% block content %}
+<div class="content-wrapper mt-4 pt-4">
+  <div class="row">
+    <div class="col-12">
+		<table class="table table-image">
+		  <thead>
+		    <tr>
+		      <th scope="col">Category image</th>
+		      <th scope="col">Category Name</th>
+              <th scope="col">Remove</th>
+              <th scope="col">Edit</th>
+		    </tr>
+		  </thead>
+		  {% for cat in category %}
+		  <tbody>
+		    <tr>
+		      <td class="w-25">   
+				<img src="{{cat.img.url}}" class="img-fluid img-thumbnail" alt="">
+				</td>
+				<td>{{cat.name}}</td>
+				<td>
+					<a href="{% url 'removecategory' id=cat.id %}"><button class="btn btn-danger">Remove</button></a>                
+				</td>
+				<td>
+					<a href="{% url 'editcategory' id=cat.id %}"><button class="btn btn-primary">Edit</button></a>  
+				</td>
+		    </tr>
+		  </tbody>
+		  {% endfor %}
+		</table>   
+    </div>
+  </div>
+</div>
+{% endblock %}

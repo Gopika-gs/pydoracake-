@@ -294,7 +294,6 @@ def quantity(request):
         price = int(request.POST['price'])
         qty = int(request.POST['qty'])
         cart_instance = CustomerCart.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty,price=price)
-        
         return JsonResponse({'result':'success'})
 
 @login_required

@@ -3,15 +3,14 @@ html {
     min-height: 100%;
 }
 
-
+.bg-primary {
+    background-color: #FF8FAB !important;
+}
 
 body {
     overflow-x: hidden;
 }
 
-body.sticky-footer {
-    margin-bottom: 56px;
-}
 
 body.sticky-footer .content-wrapper {
     min-height: calc(100vh - 56px - 56px);
