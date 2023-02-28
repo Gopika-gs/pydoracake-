@@ -3,8 +3,9 @@ from . import views
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+     path('',views.admindashboard, name='dashboard'),
      path('adminlogin', views.loginadmin, name='adminlogin'),
-     path('', RedirectView.as_view(url='adminlogin')),
+     path('logout', views.logout, name='logout'),
      path('adminlogout', views.logoutadmin, name='adminlogout'),
      path('dashboard', views.admindashboard, name='admindashboard'),
      path('addcategorys', views.addcategorys, name='addcategorys'),
@@ -25,5 +26,7 @@ urlpatterns = [
      path('adminviewreports',views.adminviewreports,name='adminviewreports'),
      path('removecategory <id>', views.removecategory, name='removecategory'),
      path('editcategory <id>', views.editcategory, name='editcategory'),
+     path('vieworder',views.vieworder, name='vieworder'),
+     path('delivered',views.delivered, name='delivered'),
 
      ]

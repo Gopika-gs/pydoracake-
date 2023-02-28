@@ -5,9 +5,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse_lazy
-from storefront.models import CustomerCart
-from storefront.models import CustomerCheckout
-from storefront.models import customerPayedProducts
+from storefront.models import Order
 from storefront.views import is_ajax
 from .models import Categorys, Products
 from storefront.forms import LoginForm
@@ -20,13 +18,13 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from datetime import date
 import csv
+from django.contrib.auth.models import User,auth
 
 # Create your views here.
 
 def loginadmin(request):
     if request.user.is_authenticated:
-        return  HttpResponseRedirect (reverse('admindashboard'))
-        
+        return  HttpResponseRedirect (reverse('admindashboard')) 
     else:	
         if request.method == 'POST':
             login_form = LoginForm(request.POST)
@@ -39,7 +37,7 @@ def loginadmin(request):
                 if user is not None:
                     if user.is_active and user.is_superuser:
                         login(request,user)	
-                        return HttpResponseRedirect(reverse('admindashboard'))
+                        return HttpResponseRedirect(reverse('dashboard'))
                     else:
                         return HttpResponse('Your account is not active')
                 else:
@@ -52,7 +50,10 @@ def loginadmin(request):
             messages.success(request,"Logined successfully")
         return render(request,'login.html',{"form":login_form})
     
-
+@login_required(login_url = reverse_lazy('login'))
+def logout(request):
+    auth.logout(request)
+    return redirect("/")
 
 def checksuperuser(user):
     return user.is_superuser
@@ -204,7 +205,7 @@ def viewuser(request):
 
 def userdetail(request,user_id):
     user = User.objects.filter(id=user_id)
-    orders = customerPayedProducts.objects.filter(customer = user_id)
+    orders = Order.objects.filter(customer = user_id)
     return render(request,'userview.html',{'user':user,'orders':orders})
 
 @csrf_exempt
@@ -236,7 +237,7 @@ def todayssalesreport(request):
     writer = csv.writer(response)
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-    sales = CustomerCheckout.objects.filter(payedon__range=(today_min, today_max))
+    sales = Order.objects.filter(payedon__range=(today_min, today_max))
     writer.writerow(['Order_id', 'Payment_id', 'Amount', 'Reciept', 'Phonenum', 'Address'])
     for sale in sales:
         writer.writerow([sale.order_id, sale.payment_id, sale.total_amount, sale.reciept_num, sale.delivery_phone, sale.delivery_address])
@@ -245,3 +246,15 @@ def todayssalesreport(request):
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def adminviewreports(request):
     return render(request,'salesreport.html',{})
+
+def vieworder(request):
+    orders = Order.objects.all()
+    return render(request,'vieworder.html',{'orders':orders,})
+
+@csrf_exempt
+def delivered(request):
+    if is_ajax(request=request):
+        id = request.POST['order_id']
+        order = Order.objects.filter(id=id)
+        order.delete()
+        return JsonResponse({'result':'success'})

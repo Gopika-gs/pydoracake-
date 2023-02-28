@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from adminpannel.models import Products
+from django.utils.timezone import now
 
 UPGRADE_CHOICES = (
     ('1/2kg','1/2kg'),
@@ -42,11 +43,18 @@ class CustomerCheckout(models.Model):
     payment_complete = models.IntegerField(default = 0)
     payedon = models.DateTimeField(auto_now_add=True)
 
-class customerPayedProducts(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
-    product_name = models.CharField(max_length=200)
-    price = models.FloatField()
-    checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE, null=False, blank=False)
+
+class Order(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
+    product_name = models.ForeignKey(Products, on_delete=models.CASCADE, null=False, blank=False)
+    price  = models.IntegerField(default=0,null=False)
+    quantity = models.IntegerField(default=1)
+    addedon = models.DateTimeField(default=now)
+    upgrade = models.CharField(choices=UPGRADE_CHOICES,default='1/2kg', max_length=10)
+    content = models.CharField(choices=CONTENT_CHOICES,default='egg', max_length=10)
+    message = models.CharField(max_length=40,default=None)
+    checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE,null=True, blank=True)
+
 
 RATING = (
     (1,'1'),
@@ -55,9 +63,3 @@ RATING = (
     (4,'4'),
     (5,'5'),
 )
-
-class ProductReview(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=False, blank=False)
-    rreview_text = models.TextField()
-    review_rating = models.CharField(choices=RATING,max_length=150)

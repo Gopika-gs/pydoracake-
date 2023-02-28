@@ -21,6 +21,11 @@
                     <label for="date">Delivery Date</label>
                     {{checkoutform.date}}
                 </div>    
+                {% if usercart %}
+                {% for item in usercart %}
+                <input type="hidden" name="product_id" value="{{ item.id }}">
+                {% endfor %}
+                {% endif %}
                 <div class="col-12 text-right">
                     <input type="submit" class="btn btn-outline-success" value="Checkout">
                 </div>

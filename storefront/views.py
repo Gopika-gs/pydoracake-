@@ -2,12 +2,12 @@ import uuid,razorpay
 from django.views.generic import  ListView
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate
 from adminpannel.models import  Categorys, Products
-from .models import CustomerCart, CustomerCheckout, WishList, customerPayedProducts
+from .models import CustomerCart, CustomerCheckout,WishList,Order
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -148,11 +148,11 @@ def viewMore(request,category_id):
             list_product_ids.append(item.product.id)
             print(list_product_ids)
         return render(request,'view_more.html',{'prod': prod,
-                                                'cartn':cartn,
-                                                'wishn':wishn,
-                                                'wishlist':wishlist,
-                                                'list_product_ids':list_product_ids,
-                                                })
+                                            'cartn':cartn,
+                                            'wishn':wishn,
+                                            'wishlist':wishlist,
+                                            'list_product_ids':list_product_ids})
+    return render(request,'view_more.html',{'prod':prod})
 
 def detailpage(request,id):
     prod = Products.objects.get(id = id) 
@@ -191,15 +191,11 @@ def buynow(request):
                                     upgrade=upgrade,
                                     content=content,
                                     price=price)
-        if usercart:
-            for item in usercart:
-                if item == cart_instance:
-                    return JsonResponse({'result':'failed'})
-        else:
 
-            cart_instance.save()
-            print(usercart)
-            return JsonResponse({'result':'success'})
+
+        cart_instance.save()
+        print(usercart)
+        return JsonResponse({'result':'success'})
 
 def viewWishlist(request):
     wishlist = WishList.objects.filter(customer = request.user).select_related('product')
@@ -294,6 +290,7 @@ def quantity(request):
         price = int(request.POST['price'])
         qty = int(request.POST['qty'])
         cart_instance = CustomerCart.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty,price=price)
+        update_quan = Order.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty)
         return JsonResponse({'result':'success'})
 
 @login_required
@@ -301,12 +298,14 @@ def checkoutcustomer(request):
     if request.method == 'POST':
         cartn = cartnum(request)
         wishn = wishnum(request)
+        usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
         user = request.user
+        product_id = request.POST['product_id']
+        product = get_object_or_404(Products, pk=product_id)
         address = request.POST['address']
         phone = request.POST['phone']
         pincode = request.POST['pincode']
         date = request.POST['date']
-        usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
         totalprice = sum(item.price for item in usercart)
         receipt = str(uuid.uuid1())
         client = razorpay.Client(auth=("rzp_test_NjFTSrtk8dCDt7", "vJjpGBMlQlJ0O0of5Rm7BlP5"))
@@ -330,10 +329,15 @@ def checkoutcustomer(request):
         customercheckout_order_instance.save()
         customercheckout = CustomerCheckout.objects.get(id = customercheckout_order_instance.id)
         for item in usercart:
-            orderedproduct_instance = customerPayedProducts(customer = request.user,
-                                                            product_name = item.product.name,
-                                                            price = item.product.price,
-                                                            checkout_details = customercheckout)
+            orderedproduct_instance = Order(customer = request.user,
+                                            product_name = product,
+                                            price = item.product.price,
+                                            quantity = item.quantity,
+                                            addedon = item.addedon,
+                                            upgrade = item.upgrade,
+                                            content = item.content,
+                                            message = item.message,
+                                            checkout_details = customercheckout)
             orderedproduct_instance.save()
                                                             
         context = {'order_id' : order_details.get('id'),
@@ -371,7 +375,6 @@ def markpaymentsuccess(request):
         customercart_instance.delete()
         return JsonResponse({'result':'success'})        
              
-   
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
 def paymentsuccess(request):
@@ -382,5 +385,6 @@ def paymentsuccess(request):
 def placeorder(request):
     cartn = cartnum(request)
     wishn = wishnum(request)
+    usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
     checkoutForm = CustomerCheckoutForm()
-    return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn,'wishn':wishn})
+    return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn,'wishn':wishn,'usercart':usercart})

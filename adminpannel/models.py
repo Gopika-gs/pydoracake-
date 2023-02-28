@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ModelForm
 import os
+from django.contrib.auth.models import User
 
 # Create your models here.
 def get_upload_path(instance, filename):
@@ -15,7 +16,6 @@ class Categorys(models.Model):
     name = models.CharField(max_length=100)
     def __str__(self):
         return self.name
-
 
 STOCK = (
     ('Stock Available','Stock Available'),
@@ -41,4 +41,3 @@ class CategoryForm(ModelForm):
     class meta:
         model = Categorys
         fields = ['img','name']
-    

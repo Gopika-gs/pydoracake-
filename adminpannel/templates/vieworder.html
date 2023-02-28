@@ -1,0 +1,73 @@
+{% extends 'adminbase.html'%} {% load static %} 
+
+{%block content%}
+<div class="content-wrapper mt-4 pt-4">
+    <div class="row">
+      <div class="col-12">
+          <table class="table table-image">
+            <thead>
+              <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Product name</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Content</th>
+                <th scope="col">Upgrade</th>
+                <th scope="col">Message</th>
+                <th scope="col">Price</th>
+                <th scope="col">Delivery Address</th>
+                <th scope="col">Delivery Phone </th>
+                <th scope="col">Date</th>
+                <th scope="col">Pincode</th>
+                <th scope="col">Paydone</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            {% for order in orders %}
+            <tbody>
+              <tr>
+                <td>{{order.customer}}</td>
+                <td>{{order.product_name.name}}</td>
+                <td>{{order.quantity}}</td>
+                <td>{{order.content}}</td>
+                <td>{{order.upgrade}}</td>
+                <td>{{order.message}}</td>
+                <td>{{order.price}}</td>
+                <td>{{order.checkout_details.delivery_address}}</td>
+                <td>{{order.checkout_details.delivery_phone}}</td>
+                <td>{{order.checkout_details.date}}</td>
+                <td>{{order.checkout_details.pincode}}</td>
+                <td>{{order.checkout_details.payedon}}</td>
+                <td><a id="delivered{{order.id}}" href="" order_id ="{{order.id}}" class="delivered btn btn-sm btn-success">Delivered</a></td>
+              </tr>
+            </tbody>
+            {% endfor %}
+          </table>   
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{%block scripts%}
+<script>
+
+  $(document).on('click','.delivered',function(e){
+    e.preventDefault();
+    var order_id = $(this).attr('order_id');
+$.ajax(
+    {
+        type: "POST",
+        url: "{%url 'delivered' %}",
+        dataType: 'json',
+        data:{order_id:order_id},
+        success: function(data) {
+            location.reload(true)
+        },
+        error: function() { 
+          alert("failed")
+        }
+    });
+});
+    
+
+</script>
+{% endblock %}
