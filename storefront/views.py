@@ -300,8 +300,9 @@ def checkoutcustomer(request):
         wishn = wishnum(request)
         usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
         user = request.user
-        product_id = request.POST['product_id']
-        product = get_object_or_404(Products, pk=product_id)
+        product_id = request.POST.get('product_id')
+        print(product_id)
+        product = Products.objects.get(id=7)
         address = request.POST['address']
         phone = request.POST['phone']
         pincode = request.POST['pincode']
@@ -388,3 +389,13 @@ def placeorder(request):
     usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
     checkoutForm = CustomerCheckoutForm()
     return render(request,'storefront/placeorder.html',{'checkoutform':checkoutForm,'cartn':cartn,'wishn':wishn,'usercart':usercart})
+
+def userorder(request):
+    cartn = cartnum(request)
+    wishn = wishnum(request)
+    orders = Order.objects.filter(customer=request.user)
+    checkout_detail = CustomerCheckout.objects.filter(customer=request.user)
+    return render(request,'storefront/userorder.html',{'cartn':cartn,
+                                                       'wishn':wishn,
+                                                       'orders':orders,
+                                                       'checkout_detail':checkout_detail})

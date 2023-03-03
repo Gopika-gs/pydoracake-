@@ -27,5 +27,7 @@ urlpatterns=[
     path('addtowishlist',views.addtowishlist, name='addtowishlist'),
     path('viewWishlist',views.viewWishlist , name='viewWishlist'),
     path('removefromwishlist', views.removefromwishlist, name='removefromwishlist'),
-    path('guestwishlist',views.guestwishlist,name='guestwishlist')
+    path('guestwishlist',views.guestwishlist,name='guestwishlist'),
+    path('userorder',views.userorder, name='userorder'),
+    
 ]

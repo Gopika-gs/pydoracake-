@@ -1,0 +1,102 @@
+    {% extends "partials/base.html" %}
+    {% block userorder %}
+    <section class="h-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-10 col-xl-8">
+                {% if order %}
+                {% for order in orders  %}
+                <div class="card" style="border-radius: 10px;">
+                    
+                    <div class="card-header px-4 py-5">
+                        <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #FF8FAB;">{{user.username}}</span>!</h5>
+                    </div>
+                    
+                    <div class="card-body p-4 mt-3">
+                        <div class="card shadow-0 border mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{{order.product_name.img.url}}"
+                                            class="img-fluid" alt="Phone">
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0">{{order.product_name.name}}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">{{order.upgrade}}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">{{order.content}}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small">Qty: {{order.quantity}}</p>
+                                    </div>
+                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                        <p class="text-muted mb-0 small"><i class="las la-rupee-sign"></i>{{order.price}}</p>
+                                    </div>
+                                </div>
+                                <hr class="mb-4" style="background-color: #FF8FAB; opacity: 1;">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-2">
+                                        <p class="text-muted mb-0 small">Track Order</p>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="progress" style="height: 6px; border-radius: 16px;">
+                                            {% if order.status == 'Ordered' %}
+                                            <div class="progress-bar" role="progressbar" style="width: 5%; border-radius: 5px; background-color: #FF8FAB;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif order.status == 'Processing' %}
+                                            <div class="progress-bar" role="progressbar" style="width: 35%; border-radius: 5px; background-color: #FF8FAB;" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif order.status == 'Dispatched' %}
+                                            <div class="progress-bar" role="progressbar" style="width: 75%; border-radius: 5px; background-color: #FF8FAB;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif order.status == 'Delivered' %}
+                                            <div class="progress-bar" role="progressbar" style="width: 100%; border-radius: 5px; background-color: #FF8FAB;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex justify-content-around mb-1">
+                                            <p class="text-muted mt-1 mb-0 small ms-xl-5">Orderplaced</p>
+                                            <p class="text-muted mt-1 mb-0 small ms-xl-5">Processing</p>
+                                            <p class="text-muted mt-1 mb-0 small ms-xl-5">Out of delivery</p>
+                                            <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% for order in checkout_detail %}
+                        <div class="d-flex justify-content-between pt-2">
+                            <p class="fw-bold mb-0">Order Details</p>
+                            <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span><i class="las la-rupee-sign"></i>{{order.total_amount}}</p>
+                        </div>
+                        <div class="d-flex justify-content-between pt-2">
+                            <p class="text-muted mb-0">Invoice Number : {{order.reciept_num}}</p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <p class="text-muted mb-0">Invoice Date : {{order.payedon}}</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-5">
+                            <p class="text-muted mb-0">Delivery Address : {{order.delivery_address}}</p>
+                        </div>
+                        
+                    </div>
+                    <div class="card-footer border-0 px-4 py-5"
+                        style="background-color: #FF8FAB; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                        <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+                        paid: <span class="h2 mb-0 ms-2"><i class="las la-rupee-sign"></i>{{order.total_amount}}</span></h5>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="ibox-content text-center">
+                    <h3 class="text-danger text-center">Your Orders</h3>
+                    <h4 class="text-info text-center">You have no orders to show</h4>
+                    <a href="{% url 'homepage' %}" class="btn btn-sm btn-info mx-auto"> Shop Now</a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+
+    {% endblock %}

@@ -77,6 +77,8 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item dropdown-link" href="{%url 'viewWishlist' %}"><i class="las la-heart"></i> My wishlist({{wishn.listitem}})</a>
                   <div class="dropdown-divider"></div>
+                  <a class="dropdown-item dropdown-link" href="{%url 'userorder' %}"><i class="las la-shopping-bag"></i> My Orders</a>
+                  <div class="dropdown-divider"></div>
                   <a class="dropdown-item dropdown-link" href="{% url 'logout' %}"><i class="las la-user-plus"></i> Logout</a>
                 </div>
               </div>
@@ -164,6 +166,9 @@
       {% endblock %}
 
       {% block guestwishlist %}
+      {% endblock %}
+
+      {% block userorder %}
       {% endblock %}
 
       

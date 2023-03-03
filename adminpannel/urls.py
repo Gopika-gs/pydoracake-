@@ -26,7 +26,15 @@ urlpatterns = [
      path('adminviewreports',views.adminviewreports,name='adminviewreports'),
      path('removecategory <id>', views.removecategory, name='removecategory'),
      path('editcategory <id>', views.editcategory, name='editcategory'),
-     path('vieworder',views.vieworder, name='vieworder'),
-     path('delivered',views.delivered, name='delivered'),
+     path('process',views.process, name='process'),
+     path('dispatch',views.dispatch, name='dispatch'),
+     path('deliver',views.deliver, name='deliver'),
+     path('vieworder', views.vieworder,name='vieworder'),
+     path('vieworder?status=Processing', views.vieworder,name='filtervieworder' ),
+     path('vieworder?status=Ordered', views.vieworder,name='filtervieworder' ),
+     path('vieworder?status=Dispatched', views.vieworder,name='filtervieworder' ),
+     path('vieworder?status=Delivered', views.vieworder,name='filtervieworder' ),
+     path('vieworder<str:stat>',views.vieworder,name='filtervieworder' ),
+
 
      ]

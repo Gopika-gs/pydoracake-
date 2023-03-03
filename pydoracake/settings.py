@@ -136,6 +136,5 @@ STATIC_ROOT = os.path.join(BASE_DIR,'assets')
 
 MEDIA_URL = '/pics/'
 
-LOGIN_REDIRECT_URL = "homepage"
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

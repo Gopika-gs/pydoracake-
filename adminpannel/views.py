@@ -62,10 +62,23 @@ def checksuperuser(user):
 def logoutadmin(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
+
+
 @csrf_exempt
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def admindashboard(request):
-    return render(request,'admindashboard.html',{})
+    orders_c = Order.objects.filter(status='Ordered')
+    process_c = Order.objects.filter(status='Processing')
+    dispatch_c = Order.objects.filter(status='Dispatched')
+    deliver_c = Order.objects.filter(status='Delivered')
+    order_count = len(orders_c)
+    processing_count = len(process_c)
+    dispatched_count = len(dispatch_c)
+    delivered_count = len(deliver_c)
+    return render(request,'admindashboard.html',{'order_count':order_count,
+                                                 'processing_count':processing_count,
+                                                 'dispatched_count':dispatched_count,
+                                                 'delivered_count' :delivered_count})
 
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def addcategorys(request):
@@ -247,14 +260,43 @@ def todayssalesreport(request):
 def adminviewreports(request):
     return render(request,'salesreport.html',{})
 
-def vieworder(request):
-    orders = Order.objects.all()
-    return render(request,'vieworder.html',{'orders':orders,})
+def vieworder(request,stat):
+    if request.method == 'GET':
+        
+        status = request.GET.get('status')
+        if status =='Processing' or stat == 'Processing':
+            orders = Order.objects.filter(status='Processing')
+        elif status =='Ordered' or stat == 'Ordered':
+            orders = Order.objects.filter(status='Ordered')
+        elif status =='Delivered' or stat == 'Delivered':
+            orders = Order.objects.filter(status='Delivered')
+        elif status =='Dispatched' or stat == 'Dispatched':
+            orders = Order.objects.filter(status='Dispatched')
+        elif status =='none' or stat == 'none':
+            orders = Order.objects.all()
+        else :
+            orders = Order.objects.all()
+
+    return render(request,'vieworder.html',{'orders':orders})
 
 @csrf_exempt
-def delivered(request):
+def process(request):
     if is_ajax(request=request):
         id = request.POST['order_id']
-        order = Order.objects.filter(id=id)
-        order.delete()
+        order = Order.objects.filter(id=id).update(status='Processing')
         return JsonResponse({'result':'success'})
+
+@csrf_exempt  
+def dispatch(request):
+    if is_ajax(request=request):
+        id = request.POST['order_id']
+        order = Order.objects.filter(id=id).update(status='Dispatched')
+        return JsonResponse({'result':'success'})
+
+@csrf_exempt   
+def deliver(request):
+    if is_ajax(request=request):
+        id = request.POST['order_id']
+        order = Order.objects.filter(id=id).update(status='Delivered')
+        return JsonResponse({'result':'success'})
+    

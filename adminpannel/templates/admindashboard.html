@@ -15,14 +15,62 @@
       <!-- Icon Cards-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-success o-hidden h-100">
+          <div class="card text-white bg-danger o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
                 <i class="las la-shopping-cart"></i>
               </div>
-              <div class="mr-5"> New Orders!</div>
+              <div class="mr-5">{{order_count}} New Orders!</div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="{% url 'vieworder' %}">
+            <a class="card-footer text-white clearfix small z-1" href="{% url 'filtervieworder' stat='Ordered' %}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="las la-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-success o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="las la-box"></i>
+              </div>
+              <div class="mr-5">{{processing_count}} Processing Orders!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="{% url 'filtervieworder' stat='Processing' %}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="las la-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-warning o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="las la-truck-moving"></i>
+              </div>
+              <div class="mr-5">{{dispatched_count}} Dispatched Orders!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1"  href="{% url 'filtervieworder' stat='Dispatched' %}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="las la-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card text-white bg-info o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="las la-clipboard-check"></i>
+              </div>
+              <div class="mr-5">{{delivered_count}} Delivered Orders!</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="{% url 'filtervieworder' stat='Delivered' %}">
               <span class="float-left">View Details</span>
               <span class="float-right">
                 <i class="las la-angle-right"></i>

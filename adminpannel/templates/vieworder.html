@@ -4,9 +4,22 @@
 <div class="content-wrapper mt-4 pt-4">
     <div class="row">
       <div class="col-12">
+        <form method="GET">
+          <label for="status">Filter by status:</label>
+          <select name="status" id="status">
+              <option value=" " {% if request.GET.status == 'none' %}selected{% endif %}>All</option>
+              <option value="Ordered" {% if request.GET.status == 'Ordered' %}selected{% endif %}>Ordered</option>
+              <option value="Processing" {% if request.GET.status == 'Processing' %}selected{% endif %}>Processing</option>
+              <option value="Dispatched" {% if request.GET.status == 'Dispatched' %}selected{% endif %}>Dispatched</option>
+              <option value="Delivered" {% if request.GET.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+          </select>
+          <button class="btn filter" id="filter" href="{% url 'filtervieworder' %}" type="submit">Filter</button>
+        </form>
           <table class="table table-image">
             <thead>
               <tr>
+                <th scope="col">Action</th>
+                <th scope="col">Status</th>
                 <th scope="col">Username</th>
                 <th scope="col">Product name</th>
                 <th scope="col">Quantity</th>
@@ -19,12 +32,25 @@
                 <th scope="col">Date</th>
                 <th scope="col">Pincode</th>
                 <th scope="col">Paydone</th>
-                <th scope="col">Action</th>
               </tr>
             </thead>
             {% for order in orders %}
             <tbody>
               <tr>
+                <td>
+                  {% if order.status == 'Ordered' %}
+                  <a id="action{{order.id}}" href="" order_id ="{{order.id}}" class="process btn btn-sm btn-danger">Process</a>
+                  {% elif order.status == 'Processing' %}
+                  <a id="action{{order.id}}" href="" order_id ="{{order.id}}" class="dispatch btn btn-sm btn-warning">Dispatch</a>
+                  {% elif order.status == 'Dispatched' %}
+                  <a id="action{{order.id}}" href="" order_id ="{{order.id}}" class="deliver btn btn-sm btn-success">Deliver</a>
+                  {% elif order.status == 'Delivered' %}
+                  <strong id="statustext{{order.id}}" class="text-success">Successfully Delivered</strong>
+                  {% endif %}
+                </td>
+                <td>
+                  <strong id="statustext{{order.id}}" class="text-success">{{order.status}}</strong>
+                </td>
                 <td>{{order.customer}}</td>
                 <td>{{order.product_name.name}}</td>
                 <td>{{order.quantity}}</td>
@@ -37,8 +63,7 @@
                 <td>{{order.checkout_details.date}}</td>
                 <td>{{order.checkout_details.pincode}}</td>
                 <td>{{order.checkout_details.payedon}}</td>
-                <td><a id="delivered{{order.id}}" href="" order_id ="{{order.id}}" class="delivered btn btn-sm btn-success">Delivered</a></td>
-              </tr>
+                </tr>
             </tbody>
             {% endfor %}
           </table>   
@@ -50,24 +75,59 @@
 {%block scripts%}
 <script>
 
-  $(document).on('click','.delivered',function(e){
+  $(document).on('click','.process',function(e){
     e.preventDefault();
     var order_id = $(this).attr('order_id');
+  $.ajax(
+      {
+          type: "POST",
+          url: "{%url 'process' %}",
+          dataType: 'json',
+          data: {order_id:order_id},
+          success: function(data) {
+              location.reload(true)
+          },
+          error: function() {
+            alert("process fail") 
+          }
+    });
+});
+
+$(document).on('click','.dispatch',function(e){
+  e.preventDefault();
+  var order_id = $(this).attr('order_id');
 $.ajax(
     {
         type: "POST",
-        url: "{%url 'delivered' %}",
+        url: "{%url 'dispatch' %}",
         dataType: 'json',
-        data:{order_id:order_id},
+        data: {order_id:order_id},
         success: function(data) {
-            location.reload(true)
+          location.reload(true)
         },
-        error: function() { 
-          alert("failed")
+        error: function() {
+          alert("dispatch fail") 
         }
-    });
+  });
 });
-    
+
+$(document).on('click','.deliver',function(e){
+  e.preventDefault();
+  var order_id = $(this).attr('order_id');
+$.ajax(
+    {
+        type: "POST",
+        url: "{%url 'deliver' %}",
+        dataType: 'json',
+        data: {order_id:order_id},
+        success: function(data) {
+          location.reload(true)
+        },
+        error: function() {
+          alert("deliver fail") 
+        }
+  });
+});
 
 </script>
 {% endblock %}

@@ -43,6 +43,11 @@ class CustomerCheckout(models.Model):
     payment_complete = models.IntegerField(default = 0)
     payedon = models.DateTimeField(auto_now_add=True)
 
+choices = (('Ordered', 'Ordered'),
+        ('Processing', 'Processing'), 
+        ('Dispathched', 'Dispathched'),
+        ('Delivered','Delivered'),
+        )
 
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
@@ -54,6 +59,8 @@ class Order(models.Model):
     content = models.CharField(choices=CONTENT_CHOICES,default='egg', max_length=10)
     message = models.CharField(max_length=40,default=None)
     checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE,null=True, blank=True)
+    status = models.CharField(max_length = 100, choices = choices,default="Ordered")
+
 
 
 RATING = (
