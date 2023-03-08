@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-info o-hidden h-100">
+          <div class="card text-white  o-hidden h-100" style="background-color: #0077F8;">
             <div class="card-body">
               <div class="card-body-icon">
                 <i class="las la-clipboard-check"></i>
@@ -79,7 +79,6 @@
           </div>
         </div>
       </div>
-      <!-- Area Chart Example-->
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-area-chart"></i> Area Chart Example</div>
@@ -128,52 +127,8 @@
         </div>
           <!-- Example Notifications Card-->
       </div>
-      <!-- Example DataTables Card-->
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-table"></i> Data Table Example</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Office</th>
-                  <th>Age</th>
-                  <th>Start date</th>
-                  <th>Salary</th>
-                </tr>
-              </thead>
-              <tfoot>
-                <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Office</th>
-                  <th>Age</th>
-                  <th>Start date</th>
-                  <th>Salary</th>
-                </tr>
-              </tfoot>
-              <tbody>
-                <tr>
-                  <td>Tiger Nixon</td>
-                  <td>System Architect</td>
-                  <td>Edinburgh</td>
-                  <td>61</td>
-                  <td>2011/04/25</td>
-                  <td>$320,800</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-      </div>
-    </div>
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fa fa-angle-up"></i>
+      <i class="las la-angle-up"></i>
     </a>
     <!-- Logout Modal-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -209,7 +164,7 @@ var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Mar 1", "Mar 2", "Mar 3", "Mar 4", "Mar 5", "Mar 6", "Mar 7", "Mar 8", "Mar 9", "Mar 10", "Mar 11", "Mar 12", "Mar 13"],
+    labels: ["January", "February", "March", "April", "May", "June", "July", "Agust", "September", "October", "Novemeber", "Decemeber"],
     datasets: [{
       label: "Sessions",
       lineTension: 0.3,
@@ -314,31 +269,30 @@ $(document).ready(function() {
 });
 
 (function($) {
-  "use strict"; // Start of use strict
-  // Configure tooltips for collapsed side navigation
+  "use strict"; 
   $('.navbar-sidenav [data-toggle="tooltip"]').tooltip({
     template: '<div class="tooltip navbar-sidenav-tooltip" role="tooltip" style="pointer-events: none;"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
   })
-  // Toggle the side navigation
+
   $("#sidenavToggler").click(function(e) {
     e.preventDefault();
     $("body").toggleClass("sidenav-toggled");
     $(".navbar-sidenav .nav-link-collapse").addClass("collapsed");
     $(".navbar-sidenav .sidenav-second-level, .navbar-sidenav .sidenav-third-level").removeClass("show");
   });
-  // Force the toggled class to be removed when a collapsible nav link is clicked
+ 
   $(".navbar-sidenav .nav-link-collapse").click(function(e) {
     e.preventDefault();
     $("body").removeClass("sidenav-toggled");
   });
-  // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
+ 
   $('body.fixed-nav .navbar-sidenav, body.fixed-nav .sidenav-toggler, body.fixed-nav .navbar-collapse').on('mousewheel DOMMouseScroll', function(e) {
     var e0 = e.originalEvent,
       delta = e0.wheelDelta || -e0.detail;
     this.scrollTop += (delta < 0 ? 1 : -1) * 30;
     e.preventDefault();
   });
-  // Scroll to top button appear
+
   $(document).scroll(function() {
     var scrollDistance = $(this).scrollTop();
     if (scrollDistance > 100) {
@@ -347,9 +301,7 @@ $(document).ready(function() {
       $('.scroll-to-top').fadeOut();
     }
   });
-  // Configure tooltips globally
   $('[data-toggle="tooltip"]').tooltip()
-  // Smooth scrolling using jQuery easing
   $(document).on('click', 'a.scroll-to-top', function(event) {
     var $anchor = $(this);
     $('html, body').stop().animate({

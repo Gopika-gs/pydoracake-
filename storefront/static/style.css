@@ -3,8 +3,6 @@ html {
     min-height: 100%;
 }
 
-
-
 body {
     overflow-x: hidden;
 }
@@ -25,6 +23,7 @@ body.fixed-nav {
     min-height: calc(100vh - 56px);
     padding-top: 1rem;
 }
+
 
 .scroll-to-top {
     position: fixed;

@@ -7,7 +7,7 @@
         <form method="GET">
           <label for="status">Filter by status:</label>
           <select name="status" id="status">
-              <option value=" " {% if request.GET.status == 'none' %}selected{% endif %}>All</option>
+              <option value="all" {% if request.GET.status == 'all' %}selected{% endif %}>All</option>
               <option value="Ordered" {% if request.GET.status == 'Ordered' %}selected{% endif %}>Ordered</option>
               <option value="Processing" {% if request.GET.status == 'Processing' %}selected{% endif %}>Processing</option>
               <option value="Dispatched" {% if request.GET.status == 'Dispatched' %}selected{% endif %}>Dispatched</option>

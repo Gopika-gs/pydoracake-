@@ -1,0 +1,92 @@
+{% extends "partials/base.html" %}
+{% block content %}
+<section class="h-100 gradient-custom">
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card" style="border-radius: 10px;">
+                <div class="card-body p-4 mt-3">
+                    <div class="card shadow-0 border mb-4">
+                        {% for order in orders  %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img src="{{order.product_name.img.url}}"
+                                        class="img-fluid" alt="Phone">
+                                </div>
+                                <form id="image-upload-form" method="post" enctype="multipart/form-data">
+                                    {%csrf_token%}
+                                    <div class="star-rating" name="star-rating">
+                                        <span class="fa fa-star-o" data-rating="1"></span>
+                                        <span class="fa fa-star-o" data-rating="2"></span>
+                                        <span class="fa fa-star-o" data-rating="3"></span>
+                                        <span class="fa fa-star-o" data-rating="4"></span>
+                                        <span class="fa fa-star-o" data-rating="5"></span>
+                                        <input type="hidden" name="rating-value" class="rating-value" value="2.56">
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="review">Review:</label>
+                                      <textarea class="form-control" id="review" name="review" rows="5"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="image">Upload Image:</label>
+                                      <input type="file" class="form-control-file" name="image" id="image">
+                                    </div>
+                                    <input type="hidden" name="order_id" value="{{order.id}}">
+                                    <button type="submit" class="btn btn-primary addreview">Submit Review</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+    var $star_rating = $('.star-rating .fa');
+
+var SetRatingStar = function() {
+  return $star_rating.each(function() {
+    if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+      return $(this).removeClass('fa-star-o').addClass('fa-star');
+    } else {
+      return $(this).removeClass('fa-star').addClass('fa-star-o');
+    }
+  });
+};
+
+$star_rating.on('click', function() {
+  $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+  return SetRatingStar();
+});
+
+SetRatingStar();
+$(document).ready(function() {
+
+});
+
+$(document).on('click','.addreview',function(e){
+  var formData = new FormData($("#image-upload-form")[0]);
+  $.ajax({
+      type:'POST',
+      url: "{%url 'cutomerreview' %}",
+      data:formData,
+      cache:false,
+      contentType: false,
+      processData: false,
+      success:function(data){
+          console.log("success");
+          window.location(homepage)
+      },
+      error: function(data){
+          console.log("error");
+          console.log(data);
+      }
+  });
+});
+</script>
+{% endblock %}

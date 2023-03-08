@@ -61,8 +61,6 @@ class Order(models.Model):
     checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE,null=True, blank=True)
     status = models.CharField(max_length = 100, choices = choices,default="Ordered")
 
-
-
 RATING = (
     (1,'1'),
     (2,'2'),
@@ -70,3 +68,10 @@ RATING = (
     (4,'4'),
     (5,'5'),
 )
+
+class CustomerReview(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=False)
+    Rating = models.CharField(max_length = 100, choices = choices,default="3")
+    Review = models.TextField(max_length=100)
+    img = models.ImageField(upload_to='pics')

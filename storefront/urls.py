@@ -29,5 +29,8 @@ urlpatterns=[
     path('removefromwishlist', views.removefromwishlist, name='removefromwishlist'),
     path('guestwishlist',views.guestwishlist,name='guestwishlist'),
     path('userorder',views.userorder, name='userorder'),
+    path('rateproduct/<int:id>',views.rateproduct,name='rateproduct'),
+    path('cutomerreview',views.cutomerreview,name='cutomerreview'),
+    
     
 ]

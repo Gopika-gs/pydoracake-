@@ -13,18 +13,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"/>
+    <link rel="stylesheet" href="https://allyoucan.cloud/cdn/icofont/1.0.1/icofont.css" integrity="sha384-jbCTJB16Q17718YM9U22iJkhuGbS0Gd2LjaWb4YJEZToOPmnKDjySVa323U+W7Fv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
     <link rel="stylesheet" href="{% static 'main.css' %}" />
   </head>
   <body>
     <!-- Site navbar -->
-    
     <nav class="site-navbar fixed-top navbar navbar-expand-lg top-navbar ">
       <a class="navbar-brand ml-3" href="{% url 'homepage'%}">
         <img src="{% static 'images/logo.png' %}" />
@@ -132,44 +132,10 @@
         {% endif %}
       </div>
 
-      {% block home %} 
+      {% block content %} 
       {% endblock %}
     
-      {% block createaccount %} 
-      {% endblock %}
-
-      {% block login %} 
-      {% endblock %}
-
-      {% block detail %} 
-      {% endblock %} 
       
-      {% block viewmore %} 
-      {% endblock %}
-
-      {% block cart %} 
-      {% endblock %}
-
-      {% block cheackout %}
-      {% endblock %}
-
-      {% block searchresult %}
-      {% endblock %}
-
-      {% block payment_success %}
-      {% endblock %}
-
-      {% block Checkout %}
-      {% endblock %}
-
-      {% block wishlist %}
-      {% endblock %}
-
-      {% block guestwishlist %}
-      {% endblock %}
-
-      {% block userorder %}
-      {% endblock %}
 
       
       <!-- Footer -->

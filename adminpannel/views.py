@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse_lazy
-from storefront.models import Order
+from storefront.models import CustomerReview, Order
 from storefront.views import is_ajax
 from .models import Categorys, Products
 from storefront.forms import LoginForm
@@ -13,14 +13,14 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import User
 from datetime import date
 import csv
+from django.core import serializers
 from django.contrib.auth.models import User,auth
 
 # Create your views here.
+
 
 def loginadmin(request):
     if request.user.is_authenticated:
@@ -63,10 +63,10 @@ def logoutadmin(request):
     logout(request)
     return HttpResponseRedirect(reverse('login'))
 
-
 @csrf_exempt
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def admindashboard(request):
+    
     orders_c = Order.objects.filter(status='Ordered')
     process_c = Order.objects.filter(status='Processing')
     dispatch_c = Order.objects.filter(status='Dispatched')
@@ -75,10 +75,12 @@ def admindashboard(request):
     processing_count = len(process_c)
     dispatched_count = len(dispatch_c)
     delivered_count = len(deliver_c)
+    userreview = CustomerReview.objects.all()
     return render(request,'admindashboard.html',{'order_count':order_count,
                                                  'processing_count':processing_count,
                                                  'dispatched_count':dispatched_count,
-                                                 'delivered_count' :delivered_count})
+                                                 'delivered_count' :delivered_count,
+                                                'userreview':userreview})
 
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def addcategorys(request):
@@ -262,7 +264,6 @@ def adminviewreports(request):
 
 def vieworder(request,stat):
     if request.method == 'GET':
-        
         status = request.GET.get('status')
         if status =='Processing' or stat == 'Processing':
             orders = Order.objects.filter(status='Processing')
@@ -272,11 +273,10 @@ def vieworder(request,stat):
             orders = Order.objects.filter(status='Delivered')
         elif status =='Dispatched' or stat == 'Dispatched':
             orders = Order.objects.filter(status='Dispatched')
-        elif status =='none' or stat == 'none':
+        elif status =='all' or stat == 'all':
             orders = Order.objects.all()
         else :
             orders = Order.objects.all()
-
     return render(request,'vieworder.html',{'orders':orders})
 
 @csrf_exempt
@@ -299,4 +299,5 @@ def deliver(request):
         id = request.POST['order_id']
         order = Order.objects.filter(id=id).update(status='Delivered')
         return JsonResponse({'result':'success'})
-    
+
+

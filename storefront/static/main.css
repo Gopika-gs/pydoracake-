@@ -17,8 +17,15 @@ a:hover {
     background-color: #FFE5EC;
 }
 
+
 .searchbar {
     margin: 0.3em 2em
+}
+
+.divider {
+    box-shadow: 4px 7px 16px -5px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 4px 7px 16px -5px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 4px 7px 16px -5px rgba(0, 0, 0, 0.75);
 }
 
 .main {
@@ -27,6 +34,12 @@ a:hover {
 
 .searchbar input {
     width: 250px;
+}
+
+.fixed {
+    position: fixed;
+    overflow: auto;
+
 }
 
 .site-navbar .navbar-brand img {
@@ -180,11 +193,24 @@ figure {
 }
 
 .detail-image {
-    height: 336px;
+    height: 500px;
     object-fit: cover;
 }
 
+.btn-custom {
+    font-size: 10px;
+    padding: 0.25rem 0.5rem;
+}
 
+.sticky-image-container {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 70px;
+    right: 10px;
+    float: right;
+}
+
+.divider {}
 
 hr {
     margin-top: 1rem;
@@ -436,4 +462,13 @@ input[type=number] {
 .media-body .media-title a {
     color: #f2789f !important;
     text-decoration: none;
+}
+
+.star-rating {
+    line-height: 32px;
+    font-size: 1.25em;
+}
+
+.star-rating .fa-star {
+    color: yellow;
 }

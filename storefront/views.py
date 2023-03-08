@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate
 from adminpannel.models import  Categorys, Products
-from .models import CustomerCart, CustomerCheckout,WishList,Order
+from .models import CustomerCart, CustomerCheckout, CustomerReview,WishList,Order
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -158,9 +158,11 @@ def detailpage(request,id):
     prod = Products.objects.get(id = id) 
     cartn = cartnum(request)
     wishn = wishnum(request)
+    review = CustomerReview.objects.all()
     if request.user.is_authenticated:  
         usercart = CustomerCart.objects.filter(customer = request.user)
         cartdetail = CustomerCart.objects.filter(customer=request.user,product=prod).values()
+        
         cart_product_ids = []
         if usercart:
             for item in usercart:
@@ -170,9 +172,10 @@ def detailpage(request,id):
                                                                     'cartdetail':cartdetail, 
                                                                     'cart_product_ids': cart_product_ids,
                                                                     'cartn':cartn,
-                                                                    'wishn':wishn})
+                                                                    'wishn':wishn,
+                                                                    'review':review})
     else:
-        return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn,'wishn':wishn})    
+        return render(request,'storefront/products_detail.html',{'prod': prod,'cartn':cartn,'wishn':wishn,'review':review})    
 
 @csrf_exempt
 @login_required(login_url = reverse_lazy('login'))
@@ -393,9 +396,43 @@ def placeorder(request):
 def userorder(request):
     cartn = cartnum(request)
     wishn = wishnum(request)
+    review_order_ids =[]
     orders = Order.objects.filter(customer=request.user)
+    reviews = CustomerReview.objects.filter(customer=request.user)
+    for item in reviews:
+            review_order_ids.append(item.order_id)
+            print(review_order_ids)
     checkout_detail = CustomerCheckout.objects.filter(customer=request.user)
     return render(request,'storefront/userorder.html',{'cartn':cartn,
                                                        'wishn':wishn,
                                                        'orders':orders,
-                                                       'checkout_detail':checkout_detail})
+                                                       'checkout_detail':checkout_detail,
+                                                       'reviews':reviews,
+                                                       'review_order_ids':review_order_ids})
+
+def rateproduct(request,id):
+    cartn = cartnum(request)
+    wishn = wishnum(request)
+    orders = Order.objects.filter(customer =request.user,id=id,status='Delivered')
+    return render(request,'storefront/productreview.html',{'cartn':cartn,
+                                                       'wishn':wishn,
+                                                       'orders':orders})
+@csrf_exempt
+def cutomerreview(request):
+    if is_ajax(request=request):
+        rating = request.POST['rating-value']
+        review = request.POST['review']
+        image = request.FILES['image']
+        order_id = request.POST['order_id']
+        orderid = Order.objects.get(id = order_id)
+        if CustomerReview.objects.filter(id=id):
+            return JsonResponse({'result':'failed'})  
+        else:
+
+            rating_instance = CustomerReview.objects.create(customer=request.user,
+                                                       order = orderid,
+                                                       Rating = rating,
+                                                       Review = review,
+                                                       img = image)
+            rating_instance.save()
+    return JsonResponse({'result':'success'})  

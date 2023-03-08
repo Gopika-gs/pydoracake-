@@ -1,17 +1,12 @@
     {% extends "partials/base.html" %}
-    {% block userorder %}
+    {% block content %}
     <section class="h-100 gradient-custom">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-lg-10 col-xl-8">
-                {% if order %}
+                {% if orders %}
                 {% for order in orders  %}
-                <div class="card" style="border-radius: 10px;">
-                    
-                    <div class="card-header px-4 py-5">
-                        <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #FF8FAB;">{{user.username}}</span>!</h5>
-                    </div>
-                    
+                <div class="card mt-3" style="border-radius: 10px;">
                     <div class="card-body p-4 mt-3">
                         <div class="card shadow-0 border mb-4">
                             <div class="card-body">
@@ -60,30 +55,28 @@
                                             <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
                                         </div>
                                     </div>
+                                    {% for detail in checkout_detail %}
+                                    <div>
+                                        <div class="d-flex justify-content-between pt-2">
+                                            <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span><i class="las la-rupee-sign"></i>{{order.price}}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between pt-2">
+                                            <p class="text-muted mb-0">Invoice Number : {{detail.reciept_num}}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <p class="text-muted mb-0">Invoice Date : {{detail.payedon}}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-5">
+                                            <p class="text-muted mb-0">Delivery Address : {{detail.delivery_address}}</p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
                                 </div>
+                                {%if order.id not in review_order_ids and order.status == 'Delivered' %}
+                                <a href="{%url 'rateproduct' id=order.id %}"><button class="btn btn-primary"><i class="las la-star"></i>Rate this product</button></a>
+                                {% endif %}
                             </div>
                         </div>
-                        {% endfor %}
-                        {% for order in checkout_detail %}
-                        <div class="d-flex justify-content-between pt-2">
-                            <p class="fw-bold mb-0">Order Details</p>
-                            <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span><i class="las la-rupee-sign"></i>{{order.total_amount}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between pt-2">
-                            <p class="text-muted mb-0">Invoice Number : {{order.reciept_num}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <p class="text-muted mb-0">Invoice Date : {{order.payedon}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between mb-5">
-                            <p class="text-muted mb-0">Delivery Address : {{order.delivery_address}}</p>
-                        </div>
-                        
-                    </div>
-                    <div class="card-footer border-0 px-4 py-5"
-                        style="background-color: #FF8FAB; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                        <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
-                        paid: <span class="h2 mb-0 ms-2"><i class="las la-rupee-sign"></i>{{order.total_amount}}</span></h5>
                     </div>
                 </div>
                 {% endfor %}

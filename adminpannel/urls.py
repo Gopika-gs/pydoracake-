@@ -30,11 +30,10 @@ urlpatterns = [
      path('dispatch',views.dispatch, name='dispatch'),
      path('deliver',views.deliver, name='deliver'),
      path('vieworder', views.vieworder,name='vieworder'),
+     path('vieworder?status=all', views.vieworder,name='filtervieworder' ),
      path('vieworder?status=Processing', views.vieworder,name='filtervieworder' ),
      path('vieworder?status=Ordered', views.vieworder,name='filtervieworder' ),
      path('vieworder?status=Dispatched', views.vieworder,name='filtervieworder' ),
      path('vieworder?status=Delivered', views.vieworder,name='filtervieworder' ),
      path('vieworder<str:stat>',views.vieworder,name='filtervieworder' ),
-
-
-     ]
+         ]
