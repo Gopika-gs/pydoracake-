@@ -27,7 +27,8 @@ class Products(models.Model):
     name = models.CharField( max_length=100)
     category = models.ForeignKey(Categorys, on_delete=models.CASCADE)
     flavour = models.CharField(max_length=100,default='chocolate')
-    price = models.IntegerField()
+    original_price = models.IntegerField()
+    final_price = models.IntegerField(default=0,null=False)
     shape = models.CharField(max_length=50)
     size = models.IntegerField(default='6')
     stock = models.CharField(choices=STOCK,default='Stock Available', max_length=30)
@@ -35,7 +36,7 @@ class Products(models.Model):
 class ProductForm(ModelForm):
     class Meta:
         model = Products
-        fields = ['img','name','category','flavour','price','shape','size','stock']
+        fields = ['img','name','category','flavour','original_price','final_price','shape','size','stock']
 
 class CategoryForm(ModelForm):
     class meta:

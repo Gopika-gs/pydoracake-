@@ -9,6 +9,8 @@ from storefront.models import CustomerReview, Order
 from storefront.views import is_ajax
 from .models import Categorys, Products
 from storefront.forms import LoginForm
+from django.db.models.functions import ExtractMonth
+import json
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
@@ -18,6 +20,9 @@ from datetime import date
 import csv
 from django.core import serializers
 from django.contrib.auth.models import User,auth
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+
 
 # Create your views here.
 
@@ -66,7 +71,6 @@ def logoutadmin(request):
 @csrf_exempt
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def admindashboard(request):
-    
     orders_c = Order.objects.filter(status='Ordered')
     process_c = Order.objects.filter(status='Processing')
     dispatch_c = Order.objects.filter(status='Dispatched')
@@ -76,11 +80,37 @@ def admindashboard(request):
     dispatched_count = len(dispatch_c)
     delivered_count = len(deliver_c)
     userreview = CustomerReview.objects.all()
+    lab = ["Ordered","Processing","Dispatched","Delivered"]
+    dat = [order_count,processing_count,dispatched_count,delivered_count]
+    labels = json.dumps(lab)
+    data = json.dumps(dat)
+    orders_by_month = Order.objects.annotate(month=TruncMonth('addedon')).values('month').annotate(total=Count('id'))
+    date= []
+    total_order = []
+    for order in orders_by_month:
+        date.append(order['month'].strftime('%B '))
+        total_order.append(order['total'])
+    date_label = json.dumps(date)
+    total_no_order = json.dumps(total_order)
+    orders = Order.objects.all().select_related('product_name')
+    total_order_price = sum(order.price for order in orders )
+    print(total_order_price)
+    
     return render(request,'admindashboard.html',{'order_count':order_count,
                                                  'processing_count':processing_count,
                                                  'dispatched_count':dispatched_count,
                                                  'delivered_count' :delivered_count,
-                                                'userreview':userreview})
+                                                'userreview':userreview,
+                                                'labels':labels,
+                                                'data':data,
+                                                'date_label':date_label,
+                                                'total_no_order':total_no_order,
+                                                'total_order_price':total_order_price
+                                                })
+
+def viewcustomerreview(request):
+    userreview = CustomerReview.objects.all()
+    return render(request,'customerreview.html',{'userreview':userreview,})
 
 @user_passes_test(checksuperuser,login_url = reverse_lazy('login'))
 def addcategorys(request):

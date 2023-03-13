@@ -61,6 +61,9 @@ class Order(models.Model):
     checkout_details = models.ForeignKey(CustomerCheckout, on_delete=models.CASCADE,null=True, blank=True)
     status = models.CharField(max_length = 100, choices = choices,default="Ordered")
 
+    def get_month(self):
+        return self.addedon.month
+
 RATING = (
     (1,'1'),
     (2,'2'),

@@ -36,4 +36,4 @@ urlpatterns = [
      path('vieworder?status=Dispatched', views.vieworder,name='filtervieworder' ),
      path('vieworder?status=Delivered', views.vieworder,name='filtervieworder' ),
      path('vieworder<str:stat>',views.vieworder,name='filtervieworder' ),
-         ]
+    path('viewcustomerreview',views.viewcustomerreview,name='viewcustomerreview')  ]

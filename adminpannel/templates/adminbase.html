@@ -20,6 +20,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
 <body>
@@ -47,6 +49,12 @@
             <a class="nav-link" href="{% url 'adminviewreports' %}">
               <i class="las la-scroll"></i>
               <span class="nav-link-text">Sales Report</span>
+            </a>
+          </li>
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Customer Review">
+            <a class="nav-link" href="{% url 'viewcustomerreview' %}">
+              <i class="las la-star"></i>
+              <span class="nav-link-text">Customer Review</span>
             </a>
           </li>
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Categorys">
