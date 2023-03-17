@@ -11,7 +11,7 @@
     </div>
     <div class=" col-6">
       <h4>{{prod.name}}</h4>
-      <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.price}}</h5>
+      <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price}}</h5>
       <form>
         <h6 class="mt-2">Pick an upgrade</h6>
         <div class="row no-gutters">
@@ -28,7 +28,7 @@
                 </td>
               </tr>
               <tr>
-                <td><figure>{{item.upgrade}} <br><i class="las la-rupee-sign detailrupee"></i>{{item.price}}</figure></td>  
+                <td><figure>{{item.upgrade}} <br><i class="las la-rupee-sign detailrupee"></i>{{item.original_price}}</figure></td>  
               </tr>
             </table>
           {% endfor %}
@@ -45,7 +45,7 @@
                 </td>
               </tr>
               <tr>
-                <td><figure>1/2 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.price}}</figure></td>  
+                <td><figure>1/2 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price}}</figure></td>  
               </tr>
             </table>
           </div>
@@ -60,7 +60,7 @@
                 </td>
               </tr>
               <tr>
-                <td><figure>1 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.price|mul:2}}</figure></figure></td>
+                <td><figure>1 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price|mul:2}}</figure></figure></td>
               </tr>
             </table>
           </div>
@@ -161,6 +161,8 @@
   </div>
 </div>
 
+{% for review in review %}
+            {% if review.order.product_name_id == prod.id %}
 <div class="container-fluid divider mt-3 my-5" style="background-color: #fff;" >
   <h2 class="text-center">Customer Reviews</h2>
   <hr/>
@@ -168,8 +170,7 @@
     <div class="carousel-inner">
       <div class="carousel-item active">
         <div class="row">
-          {% for review in review %}
-            {% if review.order.product_name_id == prod.id %}
+          
           <div class="col-md-4">
             <div class="card-body mb-4" style="background-color: #fff; width:70%">
               <div class="row no-gutters">
@@ -207,15 +208,21 @@
               </div>
             </div>
           </div>
+          {% else %}
+        </div>
+        <div class="row">
+          <div class="col mx-auto table-responsive text-center">
+              <h3 class="text-danger text-center">No customer reviews</h3>
           </div>
-          {% endif %}
-          {% endfor %}
+        </div>
+         
         </div>
       </div>
     </div>
   </div>
 </div>
-
+{% endif %}
+{% endfor %}
 
 {% endblock %}   
 

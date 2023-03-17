@@ -1,6 +1,5 @@
 {% extends 'partials/base.html'%} {% load static %} {% block content %}
 
-<!-- Login page content -->
 <div class="container">
   <div class="login-card card mt-5 ml-auto mr-auto">
     <div class="card-body">
@@ -11,7 +10,6 @@
           <a href="#" class="alert-link">{{ message }}</a>.
         </div>
         {% endfor%} {% csrf_token%}
-
         <div class="form-group">
           <label for="username">Username</label>
           {{ registerform.username}}
@@ -33,9 +31,9 @@
             <i class="las la-user-plus"></i> Register
           </button>
         </div>
-        <a href="{% url 'login' %}">Existing User? Log in</a>
-
-        
+        <div class="d-flex justify-content-center mt-1">
+          Existing User?<a class="text-dark ml-1" href="{% url 'login' %}"  style="text-decoration: none;">Log in</a>
+        </div>
       </form>
     </div>
   </div>

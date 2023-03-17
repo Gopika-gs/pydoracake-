@@ -14,46 +14,6 @@ from django.contrib import messages
 from storefront.forms import  CustomerCheckoutForm, LoginForm, RegistrationForm
 from django.views.decorators.csrf import csrf_exempt
 
-
-@login_required
-def cartnum(request):
-    usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
-    totalitems = len(usercart)
-    return {'totalitems':totalitems}
-
-@login_required
-def wishnum(request):
-    wishlist = WishList.objects.filter(customer = request.user).select_related('product')
-    listitem = len(wishlist)
-    return {'listitem':listitem}
-
-def search(request):
-    results = []
-    cartn = cartnum(request)
-    wishn = wishnum(request)
-    if request.method == "GET":
-        query = request.GET.get('search')
-        if query == '':
-            query = 'None'
-        results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(price__icontains=query))
-    return render(request, 'storefront/search_page.html', {'query': query, 'results': results,'cartn':cartn,'wishn':wishn})
-
-
-@login_required(login_url = reverse_lazy('login'))
-def logout(request):
-    auth.logout(request)
-    return redirect("/")
-
-def homepage(request):
-    cartn = cartnum(request)
-    wishn = wishnum(request)
-    categories = Categorys.objects.all()
-    return render(request,'homepage.html',{'categories': categories,
-                                            'cartn':cartn,
-                                            'wishn':wishn})
-
-def is_ajax(request):
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
         
 def register(request):
     if request.method == 'POST':
@@ -108,18 +68,59 @@ def login(request):
                     else:
                         login_form = LoginForm(request.POST)
                         messages.info(request,'Invalid credentials')
-                        return render(request,"login.html",{"form":login_form})
+                        return render(request,"storefront/login.html",{"form":login_form})
                 else:
                     login_form = LoginForm(request.POST)
-                    
-                    return HttpResponseRedirect(reverse('homepage'))
+                    messages.info(request,'Invalid credentials')
+                    return render(request,"storefront/login.html",{"form":login_form})
             else:
                 login_form = LoginForm(request.POST)
                 messages.info(request,'Invalid credentials')
-                return render(request,"login.html",{"form":login_form}) 
+                return render(request,"storefront/login.html",{"form":login_form}) 
         else:
             login_form = LoginForm()
-            return render(request,"login.html",{"form":login_form,})
+            return render(request,"storefront/login.html",{"form":login_form,})
+
+
+@login_required
+def cartnum(request):
+    usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
+    totalitems = len(usercart)
+    return {'totalitems':totalitems}
+
+@login_required
+def wishnum(request):
+    wishlist = WishList.objects.filter(customer = request.user).select_related('product')
+    listitem = len(wishlist)
+    return {'listitem':listitem}
+
+def search(request):
+    results = []
+    cartn = cartnum(request)
+    wishn = wishnum(request)
+    if request.method == "GET":
+        query = request.GET.get('search')
+        if query == '':
+            query = 'None'
+        results = Products.objects.filter(Q(name__icontains=query) | Q(img__icontains=query) | Q(original_price__icontains=query))
+    return render(request, 'storefront/search_page.html', {'query': query, 'results': results,'cartn':cartn,'wishn':wishn})
+
+
+@login_required(login_url = reverse_lazy('login'))
+def logout(request):
+    auth.logout(request)
+    return redirect("/")
+
+def homepage(request):
+    cartn = cartnum(request)
+    wishn = wishnum(request)
+    categories = Categorys.objects.all()
+    return render(request,'homepage.html',{'categories': categories,
+                                            'cartn':cartn,
+                                            'wishn':wishn})
+
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
     
 def guestaddtocart(request):
     cartn = cartnum(request)
@@ -194,8 +195,6 @@ def buynow(request):
                                     upgrade=upgrade,
                                     content=content,
                                     price=price)
-
-
         cart_instance.save()
         print(usercart)
         return JsonResponse({'result':'success'})

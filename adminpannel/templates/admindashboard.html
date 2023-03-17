@@ -1,9 +1,7 @@
 {% extends 'adminbase.html'%} {% load static %} 
 
 {% block content %}
-
   <!-- Navigation-->
-  
   <div class="content-wrapper mt-4 pt-4">
     <div class="container-fluid">
       <!-- Breadcrumbs-->
@@ -85,7 +83,6 @@
         <div class="card-body">
           <canvas id="myAreaChart" width="100%" height="30"></canvas>
         </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>
       <div class="row">
         <div class="col-lg-8">
@@ -99,19 +96,18 @@
                   <canvas id="myBarChart" width="100" height="50"></canvas>
                 </div>
                 <div class="col-sm-4 text-center my-auto">
-                  
+
                   <div class="h4 mb-0 text-primary"><i class="las la-rupee-sign"></i>{{total_order_price}}</div>
                   <div class="small text-muted">YTD Revenue</div>
                   <hr>
-                  <div class="h4 mb-0 text-warning">$18,474</div>
+                  <div class="h4 mb-0 text-warning"><i class="las la-rupee-sign"></i>{{fianl_sum}}</div>
                   <div class="small text-muted">YTD Expenses</div>
                   <hr>
-                  <div class="h4 mb-0 text-success">$16,219</div>
+                  <div class="h4 mb-0 text-success"><i class="las la-rupee-sign"></i>{{expenses}}</div>
                   <div class="small text-muted">YTD Margin</div>
                 </div>
               </div>
             </div>
-            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
           </div>
           <!-- Card Columns Example Social Feed-->
         </div>
@@ -161,10 +157,12 @@ Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSyste
 Chart.defaults.global.defaultFontColor = '#292b2c';
 // -- Area Chart Example
 var ctx = document.getElementById("myAreaChart");
+var datearray = JSON.parse('{{ date_label|escapejs }}');
+var numberoforder =   JSON.parse('{{ total_no_order|escapejs }}');
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["January", "February", "March", "April", "May", "June", "July", "Agust", "September", "October", "Novemeber", "Decemeber"],
+    labels: datearray,
     datasets: [{
       label: "Sessions",
       lineTension: 0.3,
@@ -177,7 +175,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBackgroundColor: "rgba(2,117,216,1)",
       pointHitRadius: 20,
       pointBorderWidth: 2,
-      data: [10000, 30162, 26263, 18394, 18287, 28682, 31274, 33259, 25849, 24159, 32651, 31984, 38451],
+      data: numberoforder,
     }],
   },
   options: {
@@ -196,7 +194,7 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: 40000,
+          max: 100,
           maxTicksLimit: 5
         },
         gridLines: {
@@ -212,7 +210,7 @@ var myLineChart = new Chart(ctx, {
 // -- Bar Chart Example
 var ctx = document.getElementById("myBarChart");
 var datearray = JSON.parse('{{ date_label|escapejs }}');
-var numberoforder =   JSON.parse('{{ total_no_order|escapejs }}');
+var numberoforder =   JSON.parse('{{ total_rev|escapejs }}');
 var myLineChart = new Chart(ctx, {
   type: 'bar',
   data: {
@@ -240,7 +238,7 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: 100,
+          max: 10000,
           maxTicksLimit: 5
         },
         gridLines: {

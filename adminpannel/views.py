@@ -20,12 +20,8 @@ from datetime import date
 import csv
 from django.core import serializers
 from django.contrib.auth.models import User,auth
-from django.db.models import Count
+from django.db.models import Count,Sum
 from django.db.models.functions import TruncMonth
-
-
-# Create your views here.
-
 
 def loginadmin(request):
     if request.user.is_authenticated:
@@ -84,18 +80,22 @@ def admindashboard(request):
     dat = [order_count,processing_count,dispatched_count,delivered_count]
     labels = json.dumps(lab)
     data = json.dumps(dat)
-    orders_by_month = Order.objects.annotate(month=TruncMonth('addedon')).values('month').annotate(total=Count('id'))
-    date= []
+    orders_by_month = Order.objects.annotate(month=TruncMonth('addedon')).values('month').annotate(total=Count('id')).annotate(sum=Sum('price'))
+    date = []
     total_order = []
+    total_revenue = []
     for order in orders_by_month:
         date.append(order['month'].strftime('%B '))
         total_order.append(order['total'])
+        total_revenue.append(order['sum'])
+    print(total_revenue)
     date_label = json.dumps(date)
     total_no_order = json.dumps(total_order)
+    total_rev = json.dumps(total_revenue)
     orders = Order.objects.all().select_related('product_name')
-    total_order_price = sum(order.price for order in orders )
-    print(total_order_price)
-    
+    total_order_price = sum(order.product_name.original_price for order in orders )
+    fianl_sum = sum(order.product_name.final_price for order in orders )
+    expenses = fianl_sum - total_order_price 
     return render(request,'admindashboard.html',{'order_count':order_count,
                                                  'processing_count':processing_count,
                                                  'dispatched_count':dispatched_count,
@@ -103,9 +103,12 @@ def admindashboard(request):
                                                 'userreview':userreview,
                                                 'labels':labels,
                                                 'data':data,
+                                                'total_rev':total_rev,
                                                 'date_label':date_label,
                                                 'total_no_order':total_no_order,
-                                                'total_order_price':total_order_price
+                                                'total_order_price':total_order_price,
+                                                'expenses':expenses,
+                                                'fianl_sum':fianl_sum,
                                                 })
 
 def viewcustomerreview(request):
@@ -151,7 +154,8 @@ def addingproduct(request):
     if is_ajax(request=request):
         name = request.POST['name']
         image = request.FILES['img']
-        price = request.POST['price']
+        o_price = request.POST['original_price']
+        s_price = request.POST['selling_price']
         category = request.POST['category']
         flavour = request.POST['flavour']
         size = request.POST['size']
@@ -166,7 +170,8 @@ def addingproduct(request):
                                             img = image,
                                             category = prod_instance,
                                             flavour = flavour,
-                                            price = price,
+                                            original_price = o_price,
+                                            final_price = s_price,
                                             shape = shape,
                                             size = size,) 
             product_instance.save()

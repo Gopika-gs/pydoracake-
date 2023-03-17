@@ -1,5 +1,6 @@
-{% extends 'partials/base.html'%} {% load static %} {% block content %}
-<!-- Login page content -->
+{% extends 'partials/base.html'%} {% load static %} 
+{% block content %}
+
 <div class="container">
   <div class="login-card card mt-5 ml-auto mr-auto">
     <div class="card-body">
@@ -22,8 +23,10 @@
           <button type="submit" class="btn btn-primary">
             <i class="las la-lock-open"></i> Login
           </button>
-           </div>
-           <a href="{% url 'logout' %}">New to Flipkart? Create an account</a>
+        </div>
+        <div class="d-flex justify-content-center mt-1">
+          New User? <a class="text-dark ml-1" href="{% url 'register' %}"  style="text-decoration: none;">Create an account</a>
+        </div>
       </form>
     </div>
   </div>
