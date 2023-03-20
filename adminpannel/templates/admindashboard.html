@@ -139,7 +139,7 @@
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <a class="btn btn-primary" href="{% url 'logout'%}">Logout</a>
           </div>
         </div>
       </div>
@@ -250,8 +250,7 @@ var myLineChart = new Chart(ctx, {
       display: false
     }
   }
-},console.log(numberoforder),
-console.log(datearray));
+});
 // -- Pie Chart Example
 var ctx = document.getElementById("myPieChart");
 var labelarray = JSON.parse('{{ labels|escapejs }}');
@@ -274,8 +273,7 @@ var myPieChart = new Chart(ctx,{
         }]
     }
 }
-},console.log(labelarray),
-console.log(dataarray))
+})
 ;
 
 

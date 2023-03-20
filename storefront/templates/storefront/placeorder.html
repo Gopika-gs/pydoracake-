@@ -22,7 +22,7 @@
                     {{checkoutform.date}}
                 </div>    
                 {% for item in usercart %}
-                <input type="hidden" name="product_id" product_id="{{item.id}}">
+                <input type="hidden" name="product_id" value="{{item.product.id}}">
                 {% endfor %}
                 <div class="col-12 text-right">
                     <input type="submit" class="btn btn-outline-success" value="Checkout">

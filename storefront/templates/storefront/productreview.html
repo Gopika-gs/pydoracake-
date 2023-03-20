@@ -79,12 +79,9 @@ $(document).on('click','.addreview',function(e){
       contentType: false,
       processData: false,
       success:function(data){
-          console.log("success");
           window.location(homepage)
       },
       error: function(data){
-          console.log("error");
-          console.log(data);
       }
   });
 });

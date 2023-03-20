@@ -1,7 +1,7 @@
 {% extends 'partials/base.html'%}
 {% load static %}
 {% block content %}
-  
+
   <div class="container  mt-4 ">
     {% if user.is_authenticated%}
     <div class="row">
@@ -20,7 +20,7 @@
                 <img src="{{product.img.url}}" class="card-img-top">
                 <div class="card-body">
                   <h5 class="card-title font-weight-bold ">{{product.name}}</h5> 
-                  <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.original_price}}</h4>
+                  <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.final_price}}</h4>
                 </div></a>
             </div>
         </div>
@@ -37,7 +37,7 @@
               <img src="{{product.img.url}}" class="card-img-top">
               <div class="card-body">
                 <h5 class="card-title font-weight-bold ">{{product.name}}</h5> 
-                <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.original_price}}</h4>
+                <h4 class="font-weight-bold" ><i class="las la-rupee-sign detailrupee"></i>{{product.final_price}}</h4>
               </div></a>
           </div>
       </div>

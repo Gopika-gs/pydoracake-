@@ -273,11 +273,10 @@ def removefromcartpage(request,product_id):
 
 @login_required(login_url = reverse_lazy('login'))                                      
 def viewcustomercart(request):
-    usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
+    usercart = CustomerCart.objects.filter(customer = request.user)
     cartn = cartnum(request) 
     wishn = wishnum(request)
     totalprice = sum(item.price for item in usercart)
-    print("totalprice", totalprice)
     totalitems = len(usercart)
     return render(request,'customercart.html',{'usercart':usercart,
                                                         'totalprice':totalprice,
@@ -291,8 +290,8 @@ def quantity(request):
         product_id = int(request.POST['product'])
         price = int(request.POST['price'])
         qty = int(request.POST['qty'])
-        cart_instance = CustomerCart.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty,price=price)
-        update_quan = Order.objects.filter(customer = request.user,product_id=product_id).update(quantity=qty)
+        cart_instance = CustomerCart.objects.filter(customer = user,product_id=product_id).update(quantity=qty,price=price)
+        update_quan = Order.objects.filter(customer = user,product_name=product_id).update(quantity=qty)
         return JsonResponse({'result':'success'})
 
 @login_required
@@ -300,11 +299,11 @@ def checkoutcustomer(request):
     if request.method == 'POST':
         cartn = cartnum(request)
         wishn = wishnum(request)
-        usercart = CustomerCart.objects.filter(customer = request.user).select_related('product')
+        usercart = CustomerCart.objects.filter(customer = request.user)
         user = request.user
         product_id = request.POST.get('product_id')
         print(product_id)
-        product = Products.objects.get(id=7)
+        product = Products.objects.get(id=product_id)
         address = request.POST['address']
         phone = request.POST['phone']
         pincode = request.POST['pincode']
@@ -334,7 +333,7 @@ def checkoutcustomer(request):
         for item in usercart:
             orderedproduct_instance = Order(customer = request.user,
                                             product_name = product,
-                                            price = item.product.price,
+                                            price = item.product.final_price,
                                             quantity = item.quantity,
                                             addedon = item.addedon,
                                             upgrade = item.upgrade,

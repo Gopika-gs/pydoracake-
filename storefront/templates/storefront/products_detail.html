@@ -11,7 +11,7 @@
     </div>
     <div class=" col-6">
       <h4>{{prod.name}}</h4>
-      <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price}}</h5>
+      <h5 class="detailama"><i class="las la-rupee-sign detailrupee"></i>{{prod.final_price}}</h5>
       <form>
         <h6 class="mt-2">Pick an upgrade</h6>
         <div class="row no-gutters">
@@ -28,7 +28,7 @@
                 </td>
               </tr>
               <tr>
-                <td><figure>{{item.upgrade}} <br><i class="las la-rupee-sign detailrupee"></i>{{item.original_price}}</figure></td>  
+                <td><figure>{{item.upgrade}} <br><i class="las la-rupee-sign detailrupee"></i>{{item.price}}</figure></td>  
               </tr>
             </table>
           {% endfor %}
@@ -39,13 +39,13 @@
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="1/2 KG" price="{{prod.price}}" checked>
+                    <input type="radio" name="imgbackground" id="img1" class="d-none img1" value="1/2 KG" price="{{prod.final_price}}" checked>
                       <img class="image_upgrade img-responsive" src={{prod.img.url}}>
                   </label>
                 </td>
               </tr>
               <tr>
-                <td><figure>1/2 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price}}</figure></td>  
+                <td><figure>1/2 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.final_price}}</figure></td>  
               </tr>
             </table>
           </div>
@@ -54,13 +54,13 @@
               <tr>
                 <td>
                   <label>
-                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="1 KG" price="{{prod.price|mul:2}}">
+                    <input type="radio" name="imgbackground" id="img2" class="d-none imgbgchk" value="1 KG" price="{{prod.final_price|mul:2}}">
                     <img class="image_upgrade img-responsive " src={{prod.img.url}}>
                   </label>
                 </td>
               </tr>
               <tr>
-                <td><figure>1 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.original_price|mul:2}}</figure></figure></td>
+                <td><figure>1 kg <br><i class="las la-rupee-sign detailrupee"></i>{{prod.final_price|mul:2}}</figure></figure></td>
               </tr>
             </table>
           </div>
@@ -98,7 +98,7 @@
                       <textarea class="form-control" name="message" rows="2" placeholder="Message On Cake" maxlength="25" id="message"></textarea>
                     </div>
                   </div>
-                    {% endif %}
+                  {% endif %}
                 </div>
                 <div class="row">
                   <div class="col">
@@ -162,15 +162,14 @@
 </div>
 
 {% for review in review %}
-            {% if review.order.product_name_id == prod.id %}
+      {% if review.order.product_name_id == prod.id %}
 <div class="container-fluid divider mt-3 my-5" style="background-color: #fff;" >
   <h2 class="text-center">Customer Reviews</h2>
   <hr/>
   <div id="review-slider" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <div class="row">
-          
+        <div class="row">    
           <div class="col-md-4">
             <div class="card-body mb-4" style="background-color: #fff; width:70%">
               <div class="row no-gutters">
@@ -215,7 +214,6 @@
               <h3 class="text-danger text-center">No customer reviews</h3>
           </div>
         </div>
-         
         </div>
       </div>
     </div>
@@ -239,7 +237,6 @@
     }
   })
 
- 
   $(document).on('click','.gotocart',function(e){
     e.preventDefault();
     window.location.href = "{%url 'usercart'%}"

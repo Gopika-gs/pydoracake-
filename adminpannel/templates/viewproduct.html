@@ -9,7 +9,8 @@
 		    <tr>
 		      <th scope="col">Product image</th>
 		      <th scope="col">Product Name</th>
-		      <th scope="col">Price</th>
+		      <th scope="col">original Price</th>
+			  <th scope="col">Selling Price</th>
 		      <th scope="col">Flavour </th>
 			  <th scope="col">Category</th>
 		      <th scope="col">Shape</th>
@@ -23,7 +24,8 @@
 				<img src="{{prod.img.url}}" class="img-fluid img-thumbnail" alt="">
 				</td>
 				<td>{{prod.name}}</td>
-				<td>{{prod.price}}</td>
+				<td>{{prod.original_price}}</td>
+				<td>{{prod.final_price}}</td>
 				<td>{{prod.flavour}}</td>
 				<td>{{prod.category}}</td>
 				<td>{{prod.shape}}</td>

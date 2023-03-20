@@ -37,12 +37,12 @@
                                         </dl>
                                     </td>
                                     <td class="col-lg-3 d-flex">
-                                        <a class="btn btnquan btn-qty-minus" price="{{item.product.price}}" product="{{item.product.id}}" ><i class="las la-minus"></i></a>
+                                        <a class="btn btnquan btn-qty-minus" price="{{item.product.final_price}}" product="{{item.product.id}}" ><i class="las la-minus"></i></a>
                                         <input class="text-center item-qty" type="number" value="{{item.quantity}}"  style="width:20px; border:none;">
-                                        <a class="btn btnquan btn-qty-plus" price="{{item.product.price}}" product="{{item.product.id}}" ><i class="las la-plus"></i></a>
+                                        <a class="btn btnquan btn-qty-plus" price="{{item.product.final_price}}" product="{{item.product.id}}" ><i class="las la-plus"></i></a>
                                     </td>
                                     <td class="col-lg-2">
-                                        <i class="las la-rupee-sign" price="{{item.product.price}}">{{item.price}}</i> 
+                                        <i class="las la-rupee-sign" price="{{item.product.final_price}}">{{item.product.final_price}}</i> 
                                     </td>
                                     <td class="col-lg">
                                         <a href = "{%url 'removefromcartpage' product_id=item.product.id%}"><i class="las la-times"></i></a>
@@ -79,7 +79,6 @@
                             <i class="las la-rupee-sign">{{totalprice}}</i>
                         </h2>
                         <hr>
-                        
                         <div class="m-t-sm">
                             <div class="btn-group">
                             <a href="{%url 'placeorder'%}" class="btn btn-primary btn-sm"><i class="las la-shopping-bag">Place Order</i></a>
@@ -126,8 +125,6 @@
                 url: "{%url 'quantity' %}",
                 data:{qty:qty,product:product,price:price},
                 success: function(data) {
-                    console.log("success")
-                    console.log(price)
                     location.reload(true)
                     
                 }
@@ -152,8 +149,6 @@
                 url: "{%url 'quantity' %}",
                 data:{qty:qty,product:product,price:price},
                 success: function(data) {
-                    console.log("success")
-                    console.log(price)
                     location.reload(true)
                 }
             

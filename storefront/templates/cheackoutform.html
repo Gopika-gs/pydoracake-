@@ -17,7 +17,6 @@
                     <h3 class="text-info text-center">Click the pay button to initiate payment</h3>
                     <h4 class="text-center">Total amount to be paid: <span class="text-danger">{{amount}}</span></h4>
                     <button class="btn btn-sm btn-info mx-auto px-5" id="rzp-button1">Pay</button>
-
                 </div>
             </div>
         </div>
@@ -37,8 +36,6 @@
         "name": "{{companyname}}",
         "order_id": "{{order_id}}",
         "handler": function (response){
-            alert("hello");
-            alert(response.razorpay_payment_id);
             console.log(response);
             sentPaymentInfo(response);
         },
@@ -68,11 +65,9 @@
                 payment_id:response.razorpay_payment_id,
                 payment_signature:response.razorpay_signature},
           success: function(data) {
-            alert('Payment success')
             window.location.replace("{% url 'paymentsuccess' %}");
           },
           error: function() { 
-            console.log(data)
             alert("server error");
           }
       });
